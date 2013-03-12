@@ -5,7 +5,7 @@
 #include <set>
 #include <map>
 #include <algorithm>
-// #include <cassert>
+#include <cassert>
 
 #include "TypeConversion.h"
 #include "Utils.h"
@@ -38,7 +38,7 @@ inline bool PositionPairCompare(const PositionPair& p1, const PositionPair& p2){
   if (p1.begin != p2.begin)
     return (p1.begin < p2.begin);
   return (p1.end < p2.end);
-}
+};
 
 /**
  * Store arbitrary number of ranges: e.g. [chr1:1-100, chr2:2-300....]
@@ -76,10 +76,10 @@ RangeCollection():_size(0){};
     this->sortChrVector();
     this->consolidate();
     /*
-      //assert(chrVector[0] == "1");
-      //assert(rangeMap["1"][0] == PositionPair(1, 3));
-      //assert(rangeMap["1"][1] == PositionPair(4, 10));
-      //assert(rangeMap["X"][0] == PositionPair(1, 4));
+      assert(chrVector[0] == "1");
+      assert(rangeMap["1"][0] == PositionPair(1, 3));
+      assert(rangeMap["1"][1] == PositionPair(4, 10));
+      assert(rangeMap["X"][0] == PositionPair(1, 4));
     */
 
     this->_size = 0;
@@ -104,11 +104,12 @@ RangeCollection():_size(0){};
         t -= s;
       }
     }
-    //assert(false);
+    assert(false);
   };
 
   void obtainRange(const int index, std::string* range) const {
-    unsigned int beg, end;
+    unsigned int beg = 0;
+    unsigned int end = 0;
     this->obtainRange(index, range, &beg, &end);
     range->push_back(':');
     (*range) += toString(beg);
@@ -128,7 +129,7 @@ RangeCollection():_size(0){};
     // first we first a region i such that ai <= pos
     // then we find region j such that pos < aj
     PositionPair p(pos, pos + 1);
-    std::vector<PositionPair>::const_iterator i = std::lower_bound(r.begin(), r.end(), p, PositionPairCompare);
+    std::vector<PositionPair>::const_iterator i = lower_bound(r.begin(), r.end(), p, PositionPairCompare);
     // Doc: Returns an iterator pointing to the first element in the sorted range [first,last) which does not compare less than value.
     // so the iterator points to the first element >= p.
     if (i == r.end()) {
@@ -210,10 +211,37 @@ private:
   };
   // now the range in v should be ordered
   // we will merge overlapped ranges
-  void consolidateRange(std::vector<PositionPair>* v) {
+  void consolidateRange(std::vector<PositionPair>* r) {
+    if (!r || r->empty()) return;
+    
+    std::vector<PositionPair>& v = *r;
+    const int l = v.size();
+    int last = 0; // this is the element to change
+    for (int i = 1; i < l ; ++i) {
+      // compare v[last] and v[i]
+      // case 1: v[i] and v[last] disjoint
+      if (v[i].begin > v[last].end) {
+        ++ last;
+        v[last] = v[i];
+        continue;
+      }
+      // case 2: v[i] is included in v[last], skip
+      if ( v[i].end <= v[last].end) {
+        continue;
+      }
+      // case 3: v[i] overlaps v[last], extend v[last]
+      if (v[i].begin <= v[last].end &&
+          v[i].end > v[last].end) {
+        v[last].end = v[i].end;
+      }
+    }
+    v.resize(last+1);
+    return;
+#if 0    
+    //old buggy code
     std::vector<PositionPair> t;
-    int l = v->size();
-    if (l == 0)
+    const int l = v->size();
+    if (v->empty())
       return;
 
     // int beg =  (*v)[0].begin;
@@ -224,8 +252,8 @@ private:
         continue;
 
       // if this range overlaps with last range, extend last range
-      if ( (*v)[i].begin <= (*v)[i-1].end &&
-           (*v)[i].end > (*v)[i-1].end) {
+      if ( (*v)[i].begin <= (*v)[i - 1].end &&
+           (*v)[i].end > (*v)[i - 1].end) {
         t[i-1].end = (*v)[i].end;
         continue;
       }
@@ -235,9 +263,10 @@ private:
     }
 
     // copy t -> v
-
-    v->clear();
-    std::swap( t, *v);
+    v->assign(t.begin(), t.end());
+    /* v->clear(); */
+    /* std::swap( t, *v); */
+#endif
   };
 private:
   std::vector<std::string> chrVector;
@@ -273,7 +302,7 @@ RangeList(): isSorted(false) {};
   size_t size() const {return this->rangeCollection.size(); };
   // read gene list file and add these ranges
   void filterGeneName(const char* geneName, const char* fileName);
-  /// argRangeList is a string indicating the range
+  /// @param argRangeList is a string indicating the range
   void addRangeList(const char* argRangeList);
   void addRangeFile(const char* argRangeFile);
   void addRange(const char* chr, unsigned int begin, unsigned int end) {
@@ -290,7 +319,17 @@ RangeList(): isSorted(false) {};
     this->rangeCollection.clear();
     this->isSorted = false;
   };
-
+  std::string toString() {
+    std::string ret;
+    std::string out;
+    for (size_t i = 0; i != this->size(); ++i) {
+      this->obtainRange(i, &out);
+      if (i)
+        ret.push_back(',');
+      ret += out;
+    }
+    return ret;
+  };
   void dump() {
     std::string out;
     for (size_t i = 0; i != this->size(); ++i) {
@@ -394,7 +433,7 @@ RangeList(): isSorted(false) {};
 private:
   RangeCollection rangeCollection;
   bool isSorted;
-};
+}; // end class RangeList
 
 extern int parseRangeFormat(const std::string& s, std::string* chr, unsigned int* begin, unsigned int* end);
 

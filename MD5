@@ -1,7 +1,7 @@
-153ebe26d2c136f1a863a81356e6faa7 *ChangeLog
-8a17308f981e3bae4011a59979482f18 *DESCRIPTION
+b3eb134422583f4f592022c8cb825f5b *ChangeLog
+f57bc9babe82c46d4b52fa585ba32fc4 *DESCRIPTION
 e545d365365cb5e6cb4b8682a720497e *NAMESPACE
-8775551bc89023f2cadda36fb70d7941 *R/seqminer.R
+39d5aa015c554419353b071a8f0d7f31 *R/seqminer.R
 ddeb76cd34e791893c0f539fdab879bb *bzip2.LICENSE
 dbe49534045bebcd393d3d0d5ccec28a *bzip2.README
 92e80e3f2469def75b00dd990b6520a3 *configure
@@ -18,8 +18,8 @@ eebfb3d8260a7def9f29034931b7f9e2 *inst/vcf/all.anno.filtered.extract.vcf.gz.tbi
 9cc4f5122bb2e3b0b6b519f8c00d4fd7 *inst/vcf/refFlat_hg19_6col.txt.gz
 68da52e36193b458735d265e388691f9 *man/SeqMiner.Rd
 2178fe184a0efca04249119bde3135e8 *man/hasIndex.Rd
-86fa338d232fdae81f9695c7662b1e13 *man/readVCFToListByGene.Rd
-d58981a9c9626886524a6c718e38f475 *man/readVCFToListByRange.Rd
+cc297752d2ecf2bc455e8eacd82d8565 *man/readVCFToListByGene.Rd
+77721b5a7b2d8e20939e64e6d6dca2f2 *man/readVCFToListByRange.Rd
 c9d4264ac702dcd474f1d9d0612d9a65 *man/readVCFToMatrixByGene.Rd
 16105c3be61cb4032506657c38bc9e96 *man/readVCFToMatrixByRange.Rd
 805ec995f81834df1a930516b2532d78 *man/rvmeta.readCovByRange.Rd
@@ -46,8 +46,8 @@ cea9d82e949f03b9094b3fa6c31c3df2 *src/PlinkInputFile.h
 2fe778ca0f36636899542ae319bf4da9 *src/PlinkOutputFile.h
 4dd639af02ab3da1bb22b24d05febcc9 *src/R_CPP_interface.cpp
 0acb0716e7b188fd1a543b338166c1a0 *src/R_CPP_interface.h
-4ce2987bd3dbe946e5f74e84c5bc632d *src/RangeList.cpp
-67c8bb8023fe8b3cfcf0bc6d795ec12d *src/RangeList.h
+e5008d85b50da4d108226d12290a8f37 *src/RangeList.cpp
+413260ba7111054dd6d959266987060f *src/RangeList.h
 387eb89d34fe3c3d18b2d93a734d582e *src/SimpleMatrix.cpp
 ed89460fc7151a3bfc200b066c30ee23 *src/SimpleMatrix.h
 3abb6486e2b0cc03c5854430bbacdf5c *src/TabixReader.h
@@ -85,6 +85,7 @@ ece1cf781f240938187887bf2cee8dba *src/bz_internal_error.c
 433684bb4b14928660d748d3c65890a6 *src/bzlib.h
 423e3f753a9422952a24e8d85ab5da3f *src/bzlib_private.h
 6a0331bd872c8053af4bfa357fbd5415 *src/compress.c
+5fbc88f708793e02b648d0fe48fbbe06 *src/config.h
 5fbc88f708793e02b648d0fe48fbbe06 *src/config.h.in
 1339c92938d2594a6eecfa21c374d1b6 *src/crc32.c
 f28d16b67efecdfafa0d816a7d982124 *src/crc32.h
@@ -113,7 +114,7 @@ ec87be89b9bcca8ced80a70f857e823b *src/inftrees.h
 002183a8bd7985f13aeed46440503c1d *src/kstring.c
 b22824b2f9f72abb22fa6c24ac74583b *src/kstring.h
 1fa3a687fb32f1dce8e7b5f11453398f *src/randtable.c
-ed238881360eb561411373e48a23c1f2 *src/rvMetaLoader.cpp
+f798e72fc56516def8ea165d504a07bf *src/rvMetaLoader.cpp
 1652c2f4d6ab6f9180ac08c84d1f76ba *src/rvMetaLoader.h
 6547530546cff3244357ea9bc96c0378 *src/seqminer.c
 9ea09d7361b319cb5e4ca2d752a70e9d *src/tabix.h

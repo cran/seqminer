@@ -84,7 +84,8 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
 #' @examples
 #' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-#' cfh <- readVCFToListByRange(fileName, "1:196621007-196716634", "Nonsynonymous", c("CHROM", "POS"), c("AF", "AC"), c("GT") )
+#' cfh <- readVCFToListByRange(fileName, "1:196621007-196716634", "Nonsynonymous", 
+#'                             c("CHROM", "POS"), c("AF", "AC"), c("GT") )
 readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, vcfIndv) {
   stopifnot(file.exists(fileName), length(fileName) == 1, hasIndex(fileName))
   storage.mode(fileName) <- "character"
@@ -111,7 +112,8 @@ readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, 
 #' @examples
 #' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
-#' cfh <- readVCFToListByGene(fileName, geneFile, "CFH", "Synonymous", c("CHROM", "POS"), c("AF", "AC"), c("GT") )
+#' cfh <- readVCFToListByGene(fileName, geneFile, "CFH", "Synonymous", 
+#'                            c("CHROM", "POS"), c("AF", "AC"), c("GT") )
 readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColumn, vcfInfo, vcfIndv) {
   stopifnot(file.exists(fileName), length(fileName) == 1, hasIndex(fileName))
   stopifnot(file.exists(geneFile), length(geneFile) == 1)

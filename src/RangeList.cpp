@@ -6,8 +6,8 @@ void RangeList::filterGeneName(const char* inclusionGeneFileName, const char* ge
   // require user input gene list file
   if (strlen(geneTableFileName) == 0 && strlen(inclusionGeneFileName) != 0) {
     REprintf("Please provide gene list file (e.g. refFlat) until we are able to process gene\n");
+    // exit(1);
     return;
-    //exit(1);
   }
 
   // if not specify any gene, return whole range.
@@ -106,7 +106,7 @@ void RangeList::addRangeList(const char* argRangeList) {
   std::vector<std::string> col;
   //col.AddTokens(arg, ',');
   stringTokenize(rangeList, ',', &col);
-  for (size_t i = 0; i < col.size(); i++){
+  for (unsigned int i = 0; i < col.size(); i++){
     std::string c;
     unsigned int b,e;
     if (!parseRangeFormat(col[i], &c, &b, &e)) {
@@ -115,7 +115,7 @@ void RangeList::addRangeList(const char* argRangeList) {
       Rprintf("This range does not conform 1:100-200 format -- skip %s\n", col[i].c_str());
     }
   }
-}
+};
 
 /**
  * read a range list file like following
@@ -126,7 +126,7 @@ void RangeList::addRangeList(const char* argRangeList) {
  */
 void RangeList::addRangeFile(const char* argRangeFile){
   if (!strlen(argRangeFile)) return;
-  // fprintf(stdout, "Load range file %s.\n", argRangeFile);
+  // Rprintf("Load range file %s.\n", argRangeFile);
 
   LineReader lr(argRangeFile);
   std::vector<std::string> sa;
@@ -135,16 +135,15 @@ void RangeList::addRangeFile(const char* argRangeFile){
     if (sa.size() == 1){
       // REprintf("Wrong format for --rangeFile: %s, shoudl be: chr beg end \n", argRangeFile);
       this->addRangeList(sa[0].c_str());
-      return;
     } else if (sa.size() == 2)
       this->rangeCollection.addRange(sa[0].c_str(), (unsigned int) atoi(sa[1]), (unsigned int) atoi(sa[1]));
     else if (sa.size() == 3)
       this->rangeCollection.addRange(sa[0].c_str(), (unsigned int) atoi(sa[1]), (unsigned int) atoi(sa[2]));
     else {
       // we will silently use the first 3 columns
-      // fprintf(stdout, "Will only use the first 3 column of --rangeFile %s\n", argRangeFile);
+      // Rprintf("Will only use the first 3 column of --rangeFile %s\n", argRangeFile);
       this->rangeCollection.addRange(sa[0].c_str(), (unsigned int) atoi(sa[1]), (unsigned int) atoi(sa[2]));
     }
   }
-}
+};
 

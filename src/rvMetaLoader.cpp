@@ -248,6 +248,35 @@ void sortLocationPerGene(std::map< std::string, int>* locations) {
   }
 } // end sortLocationPerGene
 
+size_t findCovariateDimension(const std::string& fn, int column) {
+  size_t ret = 0;
+  LineReader lr(fn);
+  std::string line;
+  std::vector<std::string> fd;  
+  while(lr.readLine(&line)) {
+    if (line.empty() || line[0] == '#') continue;
+    if (line.substr(0, 5) == "CHROM") continue;
+    break;
+  }
+        
+  stringNaturalTokenize(line, "\t ", &fd);
+  if (column >= fd.size() ) {
+    return ret;
+  }
+  // REprintf("all_cov = %s\n", line.c_str());
+  line = fd[column];
+  stringNaturalTokenize(line, ":", &fd);
+  if (fd.size() != 3) // covXX, covXZ, and covZZ
+    return ret;
+  
+  line = fd[1]; // covXZ
+  // REprintf("covXZ = %s\n", line.c_str());
+  stringNaturalTokenize(line, ",", &fd);
+  ret = fd.size();
+
+  return ret;
+}
+
 #define RET_REF_INDEX 0
 #define RET_ALT_INDEX 1
 #define RET_NSAMPLE_INDEX 2
@@ -265,6 +294,8 @@ void sortLocationPerGene(std::map< std::string, int>* locations) {
 #define RET_COV_INDEX 14
 #define RET_POS_INDEX 15
 #define RET_ANNO_INDEX 16
+#define RET_COV_XZ_INDEX 17
+#define RET_COV_ZZ_INDEX 18
 
 SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
                          const OrderedMap< std::string, std::string>& geneRange) {
@@ -356,7 +387,10 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   names.push_back("cov");
   names.push_back("pos");
   names.push_back("anno");
+  names.push_back("covXZ");
+  names.push_back("covZZ");
 
+  std::vector<size_t> zDims(FLAG_covFile.size(), 0);
   // GeneLocationMap::iterator iter = geneLocationMap.begin();
   for ( int i = 0;
         i < geneLocationMap.size();
@@ -366,7 +400,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     numAllocated += createList(names.size(), &s); // a list with 10 elements: ref, alt, n, maf, stat, direction, p, cov, pos, anno
     numAllocated += setListNames(names, &s);
 
-    SEXP ref, alt, n, af, ac, callRate, hwe, nref, nhet, nalt, ustat, vstat, effect, p, cov, pos, anno;
+    SEXP ref, alt, n, af, ac, callRate, hwe, nref, nhet, nalt, ustat, vstat, effect, p, cov, pos, anno, covXZ, covZZ;
     numAllocated += createList(nStudy, &ref);
     numAllocated += createList(nStudy, &alt);
     numAllocated += createList(nStudy, &n);
@@ -384,8 +418,11 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     numAllocated += createList(nStudy, &cov);
     numAllocated += createList(nStudy, &pos);
     numAllocated += createList(nStudy, &anno);
-
+    numAllocated += createList(nStudy, &covXZ);
+    numAllocated += createList(nStudy, &covZZ);
+    
     int npos = geneLocationMap.valueAt(i).size();
+    // std::vector<size_t> zDims(FLAG_covFile.size(), 0);
     // REprintf("npos= %d\n", npos);
     for (int j = 0; j < nStudy; ++j) {
       SEXP t;
@@ -456,7 +493,40 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
       }
       initDoubleArray(t);
       SET_VECTOR_ELT(cov, j, t);
-    }
+
+      // allocate memory for cov_xz
+      CovFileFormat covHeader;
+      if (covHeader.open(FLAG_covFile[j]) < 0 ){
+        REprintf("Study [ %s ] does not have valid file header \n", FLAG_covFile[j].c_str());
+        continue;
+      }
+      const int COV_FILE_COV_COL = covHeader.get("COV");
+      zDims[j] = findCovariateDimension(FLAG_covFile[j], COV_FILE_COV_COL);
+      const int zDim = zDims[j];
+      // REprintf("npos = %d, zDim = %d\n", npos, zDim);
+      if (FLAG_covFile.empty()) {
+        /// if skip covFile, then just set cov to be 1 by 1 matrix of NA
+        numAllocated += createDoubleArray(1, &t);
+        numAllocated += setDim(1, 1, &t);
+      } else {
+        numAllocated += createDoubleArray(npos*zDim, &t);
+        numAllocated += setDim(npos, zDim, &t);
+      }
+      initDoubleArray(t);
+      SET_VECTOR_ELT(covXZ, j, t);
+
+      // allocate memory for cov_zz
+      if (FLAG_covFile.empty()) {
+        /// if skip covFile, then just set cov to be 1 by 1 matrix of NA
+        numAllocated += createDoubleArray(1, &t);
+        numAllocated += setDim(1, 1, &t);
+      } else {
+        numAllocated += createDoubleArray(zDim*zDim, &t);
+        numAllocated += setDim(zDim, zDim, &t);
+      }
+      initDoubleArray(t);
+      SET_VECTOR_ELT(covZZ, j, t);
+    } // end looping study
     numAllocated += createStringArray(npos, &pos);
     initStringArray(pos);
 
@@ -480,7 +550,9 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     SET_VECTOR_ELT(s, RET_COV_INDEX, cov);
     SET_VECTOR_ELT(s, RET_POS_INDEX, pos);
     SET_VECTOR_ELT(s, RET_ANNO_INDEX, anno);
-
+    SET_VECTOR_ELT(s, RET_COV_XZ_INDEX, covXZ);
+    SET_VECTOR_ELT(s, RET_COV_ZZ_INDEX, covZZ);
+        
     SET_VECTOR_ELT(ret, i, s);
   };
 
@@ -701,7 +773,10 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   } else {
     Rprintf("Read cov files ... \n");
     std::vector<std::string> pos;
+    std::vector<std::string> covArray;
     std::vector<std::string> cov;
+    std::vector<std::string> covXZ;
+    std::vector<std::string> covZZ;
 
     for (int study = 0; study < nStudy; ++study) {
       // parse header
@@ -752,7 +827,9 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
 
           // Rprintf("pos: %s\n", fd[COV_FILE_COV_COL].c_str());
           stringNaturalTokenize(fd[COV_FILE_POS_COL], ',', &pos);
-          stringNaturalTokenize(fd[COV_FILE_COV_COL], ',', &cov);
+          stringNaturalTokenize(fd[COV_FILE_COV_COL], ':', &covArray);          
+          stringNaturalTokenize(covArray[0], ',', &cov);
+          
           if (pos.size() != cov.size()) {
             REprintf("position length does not equal to covariance length\n");
             continue;
@@ -779,6 +856,50 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
             if (str2double(cov[j], &tmp)) {
               REAL(s) [posi * covLen + posj] = tmp;
               REAL(s) [posj * covLen + posi] = tmp;
+            }
+          }
+          
+          // check if we have covXZ and covZZ fields
+          if (covArray.size() == 1) continue;
+
+          // now loading covXZ, covZZ
+          // REprintf("read covXZ\n");
+          v = VECTOR_ELT(u, RET_COV_XZ_INDEX);  // cov is the 6th element in the list
+          s = VECTOR_ELT(v, study);
+          stringNaturalTokenize(covArray[1], ',', &covXZ);
+          // REprintf("covXZ = %s\n", covArray[1].c_str());
+          int zDim = zDims[study];
+          for (size_t j = 0; j < zDim; ++j) {
+            pj = chrom + ":" + pos[0];
+            // REprintf("pj = %s, covXZ[j] = %s\n", pj.c_str(), covXZ[j].c_str());
+            if (location2idx.count(pj) == 0) {
+              continue;
+            }
+            int posj = location2idx.find(pj)->second;
+            if (str2double(covXZ[j], &tmp)) {
+              // REprintf("j = %d, covLen = %d, posj = %d, tmp = %g\n", j, covLen, posj, tmp);
+              REAL(s) [ j* covLen + posj] = tmp;
+            }
+          }
+          // REprintf("read covZZ\n");
+          v = VECTOR_ELT(u, RET_COV_ZZ_INDEX);  // cov is the 6th element in the list
+          s = VECTOR_ELT(v, study);
+          stringNaturalTokenize(covArray[2], ',', &covZZ);
+          // REprintf("covZZ = %s\n", covArray[2].c_str());
+          // Z is stored like this:
+          // 1
+          // 2, 3,
+          // 4, 5, 6
+          // 7, 8, 9, 10
+          // REprintf("covLen = %d, zDim = %d\n", covLen, zDim);
+          int idx = 0;
+          for (int i = 0; i < zDim; ++i) {
+            for (int j = 0; j <= i; ++j) {
+            if (str2double(covZZ[idx], &tmp)) {
+              REAL(s) [ i * zDim + j ]  = tmp;
+              REAL(s) [ j * zDim + i ]  = tmp;
+            }
+            ++idx;
             }
           }
         } // end tabixReader

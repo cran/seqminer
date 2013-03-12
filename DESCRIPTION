@@ -2,7 +2,7 @@ Package: seqminer
 Type: Package
 Title: Efficiently Read Sequencing Data (VCF format, METAL format) into
         R
-Version: 0.3
+Version: 0.5
 Date: 2013-3-12
 Author: Xiaowei Zhan <zhanxw@gmail.com> and Dajiang Liu
         <dajiang.liu@gmail.com>, with contributions of Jean-loup Gailly
@@ -31,7 +31,7 @@ Copyright: We have used the following software and made minimal
 License: GPL
 URL: http://zhanxw.com/seqminer
 Collate: 'seqminer.R'
-Packaged: 2013-04-13 00:38:30 UTC; zhanxw
+Packaged: 2013-05-28 16:00:52 UTC; zhanxw
 Repository: CRAN
-Date/Publication: 2013-04-13 06:52:32
+Date/Publication: 2013-05-28 22:40:02
 NeedsCompilation: yes
