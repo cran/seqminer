@@ -1,3 +1,8 @@
+2013-03-24  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Keep gene/region order consistent
+	* Remove excessive prompt message
+
 2013-03-19  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* New version
