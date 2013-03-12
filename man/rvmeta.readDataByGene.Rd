@@ -1,27 +1,41 @@
 \name{rvmeta.readDataByGene}
 \alias{rvmeta.readDataByGene}
-\title{Read a gene from VCF file and return a genotypes matrix}
+\title{Read association statistics by gene from METAL-format files. Both score statistics and covariance statistics will be extracted.}
 \usage{
   rvmeta.readDataByGene(scoreTestFiles, covFiles, geneFile,
-    gene)
+    geneName)
 }
 \arguments{
-  \item{scoreTestFiles}{score test output file (rvtests
-  outputs)}
+  \item{scoreTestFiles}{character vector, score test output
+  files (rvtests outputs using --meta score)}
 
-  \item{covFiles}{covaraite files (vcf2ld_gene outputs)}
+  \item{covFiles}{character vector, covaraite files
+  (rvtests outputs using --meta cov)}
 
-  \item{geneFile}{speicify which gene file to extract (need
-  to be refFlat format)}
+  \item{geneFile}{character, a text file listing all genes
+  in refFlat format}
 
-  \item{gene}{speicify which gene to extract}
+  \item{geneName}{character vector, which gene(s) to be
+  extracted}
 }
 \value{
-  a list of genes, and each elements contain genotype
-  covariance within gene and associated score test
-  statsitics.
+  a list of statistics including chromosome, position,
+  allele frequency, score statistics, covariance and
+  annotation(if input files are annotated).
 }
 \description{
-  Read a gene from VCF file and return a genotypes matrix
+  Read association statistics by gene from METAL-format
+  files. Both score statistics and covariance statistics
+  will be extracted.
+}
+\examples{
+scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
+covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
+geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
+cfh <- rvmeta.readDataByGene(scoreFileName, covFileName, geneFile, "CFH")
+}
+\seealso{
+  http://zhanxw.com/seqminer/ for online manual and
+  examples
 }
 

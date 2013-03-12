@@ -1,19 +1,28 @@
 \name{rvmeta.readCovByRange}
 \alias{rvmeta.readCovByRange}
-\title{Read covariance}
+\title{Read covariance by range from METAL-format files.}
 \usage{
   rvmeta.readCovByRange(covFile, tabixRange)
 }
 \arguments{
-  \item{covFile}{covaraite file (vcf2ld_window outputs)}
+  \item{covFile}{character, a covariance file (rvtests
+  outputs using --meta cov)}
 
-  \item{tabixRange}{a text indicating which range in the
-  VCF file to extract. e.g. 1:100-200}
+  \item{tabixRange}{character, a text indicating which
+  range in the VCF file to extract. e.g. 1:100-200}
 }
 \value{
-  a matrix of covariance within gene
+  a matrix of covariance within given range
 }
 \description{
-  Read covariance
+  Read covariance by range from METAL-format files.
+}
+\examples{
+covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
+cfh <- rvmeta.readCovByRange(covFileName, "1:196621007-196716634")
+}
+\seealso{
+  http://zhanxw.com/seqminer/ for online manual and
+  examples
 }
 

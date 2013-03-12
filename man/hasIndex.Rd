@@ -5,7 +5,8 @@
   hasIndex(fileName)
 }
 \arguments{
-  \item{fileName}{an input file name}
+  \item{fileName}{character vector, representing file names
+  an input file name}
 }
 \value{
   TRUE if an index file with ".tbi" exists

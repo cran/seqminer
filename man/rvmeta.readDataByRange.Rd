@@ -1,24 +1,37 @@
 \name{rvmeta.readDataByRange}
 \alias{rvmeta.readDataByRange}
-\title{Read a range from VCF file and return a genotypes matrix}
+\title{Read association statistics by range from METAL-format files. Both score statistics and covariance statistics will be extracted.}
 \usage{
   rvmeta.readDataByRange(scoreTestFiles, covFiles, ranges)
 }
 \arguments{
-  \item{scoreTestFiles}{score test output file (rvtests
-  outputs)}
+  \item{scoreTestFiles}{character vector, score test output
+  files (rvtests outputs using --meta score)}
 
-  \item{covFiles}{covaraite files (vcf2ld_gene outputs)}
+  \item{covFiles}{character vector, covaraite files
+  (rvtests outputs using --meta cov)}
 
-  \item{ranges}{speicify which range to extract (e.g.
-  1:100-200)}
+  \item{ranges}{character, a text indicating which range in
+  the VCF file to extract. e.g. 1:100-200}
 }
 \value{
-  a list of variants, and each elements contain genotype
-  covariance within gene and associated score test
-  statsitics.
+  a list of statistics including chromosome, position,
+  allele frequency, score statistics, covariance and
+  annotation(if input files are annotated).
 }
 \description{
-  Read a range from VCF file and return a genotypes matrix
+  Read association statistics by range from METAL-format
+  files. Both score statistics and covariance statistics
+  will be extracted.
+}
+\examples{
+scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
+covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
+geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
+cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
+}
+\seealso{
+  http://zhanxw.com/seqminer/ for online manual and
+  examples
 }
 

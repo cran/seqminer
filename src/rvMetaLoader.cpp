@@ -883,7 +883,6 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
   std::vector<std::string> fdPos;
   std::vector<std::string> fdCov;
 
-
   int lineNo = 0;
   ti_iter_t iter;
   int tid, beg, end;
@@ -942,8 +941,8 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
         }
       }
       if (!inOrder) {
-        REprintf("Not in order\n");
-        continue;
+        REprintf("Not in order, please check covariance file\n");
+        return ret;
       }
 
       for (int i = 0; i < considerPos; ++i) {
@@ -960,6 +959,7 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
   }
   int retDim = position.size();
   Rprintf("Total %d line loaded, now put them to matrix [ %d x %d ] in R ...\n", lineNo, retDim, retDim);
+  // Rprintf("cov.size() = %d\n", (int)cov.size());
   // // Rprintf("pos2idx.size() = %zu \n", pos2idx.size());
   // for (std::map<std::string, int>::const_iterator iter = pos2idx.begin();
   //      iter != pos2idx.end();

@@ -1,36 +1,50 @@
 \name{readVCFToListByGene}
 \alias{readVCFToListByGene}
-\title{Read a gene from VCF file and return a genotypes matrix}
+\title{Read information from VCF file in a given range and return a list}
 \usage{
   readVCFToListByGene(fileName, geneFile, geneName,
     annoType, vcfColumn, vcfInfo, vcfIndv)
 }
 \arguments{
-  \item{fileName}{input VCF file (Bgzipped, with Tabix
-  index)}
+  \item{fileName}{character, represents an input VCF file
+  (Bgzipped, with Tabix index)}
 
-  \item{geneFile}{a text file listing all genes in refFlat
-  format}
+  \item{geneFile}{character, a text file listing all genes
+  in refFlat format}
 
-  \item{geneName}{which gene(s) to be extracted}
+  \item{geneName}{character vector, which gene(s) to be
+  extracted}
 
-  \item{annoType}{which annotation you would like to
-  extract}
+  \item{annoType}{character, annotated types you would like
+  to extract, such as "Nonsynonymous", "Synonymous". This
+  can be left empty.}
 
-  \item{vcfColumn}{which vcf columns to extract, e.g.
-  CHROM, POS, FILTER...}
+  \item{vcfColumn}{character vector, which vcf columns to
+  extract. It can be chosen from CHROM, POS, ID, REF, ALT,
+  QUAL, FILTER, INFO, FORMAT and etc.}
 
-  \item{vcfInfo}{which tag in the INFO columns to extarct.
-  e.g. DP, AC...}
+  \item{vcfInfo}{character vector, which should be tags in
+  the INFO columns to extarct. Common choices include: DP,
+  AC, AF, NS}
 
-  \item{vcfIndv}{which individual tag to extract, e.g. GT,
-  GQ...}
+  \item{vcfIndv}{character vector, which values to extract
+  at individual level. Common choices are: GT, GQ, GD}
 }
 \value{
   a list of genes, and each elements has specified
   vcfColumn, vcfinfo, vcfIndv
 }
 \description{
-  Read a gene from VCF file and return a genotypes matrix
+  Read information from VCF file in a given range and
+  return a list
+}
+\examples{
+fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
+cfh <- readVCFToListByGene(fileName, geneFile, "CFH", "Synonymous", c("CHROM", "POS"), c("AF", "AC"), c("GT") )
+}
+\seealso{
+  http://zhanxw.com/seqminer/ for online manual and
+  examples
 }
 
