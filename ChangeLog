@@ -1,3 +1,15 @@
+2013-08-29  Xiaowei Zhan  <zhanxw@amd.csgstat.sph.umich.edu>
+
+	* Add automatic test cases
+
+2013-08-28  Xiaowei Zhan  <zhanxw@amd.csgstat.sph.umich.edu>
+
+	* Fix crashing when loding meta analysis files
+
+2013-08-01  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support loading HWE from all samples / cases only / controls only.
+
 2013-07-28  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Allow loading score statistics only (skipping covariance files)

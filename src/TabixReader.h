@@ -41,7 +41,7 @@ TabixReader(const std::string& fn) : inReading(false), hasIndex(false), tabixHan
       this->iter = 0;
       // REprintf("close iter...");
     }
-    
+
     /* REprintf("Close index\n"); */
     // REprintf("%x", this->tabixHandle);
     if (this->tabixHandle) {
@@ -144,7 +144,7 @@ TabixReader(const std::string& fn) : inReading(false), hasIndex(false), tabixHan
   int open(const std::string& fn) {
     inReading = false;
     ti_line = 0;
-    
+
     //open index
     this->tabixHandle = 0;
     this->iter = 0;
@@ -155,7 +155,7 @@ TabixReader(const std::string& fn) : inReading(false), hasIndex(false), tabixHan
 
     return this->hasIndex ? 0 : -1;
   };
-  
+
   void close() {
     // destroy range iterator
     // close index

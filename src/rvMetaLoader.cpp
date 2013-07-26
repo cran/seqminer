@@ -1,4 +1,5 @@
 #include "rvMetaLoader.h"
+#include "Maximum.h"
 
 #include <string>
 #include <map>
@@ -226,6 +227,7 @@ void addLocationPerGene(const std::string& gene,
   int val;
   while (tr.readLine(&line)) {
     stringNaturalTokenize(line, "\t ", &fd);
+    if (fd.size() < 2) continue;
     key = fd[0] + ":" + fd[1];
     if ( (*location)[gene].count(key)) // not update existing variant
       continue;
@@ -248,6 +250,13 @@ void sortLocationPerGene(std::map< std::string, int>* locations) {
   }
 } // end sortLocationPerGene
 
+/**
+ * @return how many covariates in the given @param column in a given file @param fn
+ * e.g. in the @param column, we listed covXX:covXZ::covZZ
+ * this function examines the dimension of Z.
+ * return 0 meaning the given @param column does not have such information
+ * return other value, if found.
+ */
 size_t findCovariateDimension(const std::string& fn, int column) {
   size_t ret = 0;
   LineReader lr(fn);
@@ -296,6 +305,8 @@ size_t findCovariateDimension(const std::string& fn, int column) {
 #define RET_ANNO_INDEX 16
 #define RET_COV_XZ_INDEX 17
 #define RET_COV_ZZ_INDEX 18
+#define RET_HWE_CASE_INDEX 19
+#define RET_HWE_CTRL_INDEX 20
 
 SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
                          const OrderedMap< std::string, std::string>& geneRange) {
@@ -390,7 +401,9 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   names.push_back("anno");
   names.push_back("covXZ");
   names.push_back("covZZ");
-
+  names.push_back("hweCase");
+  names.push_back("hweCtrl");
+  
   // REprintf("create zDims\n");
   std::vector<size_t> zDims(FLAG_covFile.size(), 0);
   // GeneLocationMap::iterator iter = geneLocationMap.begin();
@@ -404,7 +417,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     numAllocated += createList(names.size(), &s); // a list with 10 elements: ref, alt, n, maf, stat, direction, p, cov, pos, anno
     numAllocated += setListNames(names, &s);
 
-    SEXP ref, alt, n, af, ac, callRate, hwe, nref, nhet, nalt, ustat, vstat, effect, p, cov, pos, anno, covXZ, covZZ;
+    SEXP ref, alt, n, af, ac, callRate, hwe, nref, nhet, nalt, ustat, vstat, effect, p, cov, pos, anno, covXZ, covZZ, hweCase, hweCtrl;
     numAllocated += createList(nStudy, &ref);
     numAllocated += createList(nStudy, &alt);
     numAllocated += createList(nStudy, &n);
@@ -424,6 +437,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     numAllocated += createList(nStudy, &anno);
     numAllocated += createList(nStudy, &covXZ);
     numAllocated += createList(nStudy, &covZZ);
+    numAllocated += createList(nStudy, &hweCase);
+    numAllocated += createList(nStudy, &hweCtrl);
     
     int npos = geneLocationMap.valueAt(i).size();
     // std::vector<size_t> zDims(FLAG_covFile.size(), 0);
@@ -499,38 +514,48 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
       SET_VECTOR_ELT(cov, j, t);
 
       // allocate memory for cov_xz
-      if (FLAG_covFile.size() == 0) continue;
-      CovFileFormat covHeader;
-      if (covHeader.open(FLAG_covFile[j]) < 0 ){
-        REprintf("Study [ %s ] does not have valid file header \n", FLAG_covFile[j].c_str());
-        continue;
-      }
-      const int COV_FILE_COV_COL = covHeader.get("COV");
-      zDims[j] = findCovariateDimension(FLAG_covFile[j], COV_FILE_COV_COL);
-      const int zDim = zDims[j];
-      // REprintf("npos = %d, zDim = %d\n", npos, zDim);
-      if (FLAG_covFile.empty()) {
-        /// if skip covFile, then just set cov to be 1 by 1 matrix of NA
-        numAllocated += createDoubleArray(1, &t);
-        numAllocated += setDim(1, 1, &t);
-      } else {
-        numAllocated += createDoubleArray(npos*zDim, &t);
-        numAllocated += setDim(npos, zDim, &t);
-      }
-      initDoubleArray(t);
-      SET_VECTOR_ELT(covXZ, j, t);
+      if (FLAG_covFile.size() != 0) {
+        CovFileFormat covHeader;
+        if (covHeader.open(FLAG_covFile[j]) < 0 ){
+          REprintf("Study [ %s ] does not have valid file header \n", FLAG_covFile[j].c_str());
+          continue;
+        }
+        const int COV_FILE_COV_COL = covHeader.get("COV");
+        zDims[j] = findCovariateDimension(FLAG_covFile[j], COV_FILE_COV_COL);
+        const int zDim = zDims[j];
+        // REprintf("npos = %d, zDim = %d\n", npos, zDim);
+        if (FLAG_covFile.empty()) {
+          /// if skip covFile, then just set cov to be 1 by 1 matrix of NA
+          numAllocated += createDoubleArray(1, &t);
+          numAllocated += setDim(1, 1, &t);
+        } else {
+          numAllocated += createDoubleArray(npos*zDim, &t);
+          numAllocated += setDim(npos, zDim, &t);
+        }
+        initDoubleArray(t);
+        SET_VECTOR_ELT(covXZ, j, t);
 
-      // allocate memory for cov_zz
-      if (FLAG_covFile.empty()) {
-        /// if skip covFile, then just set cov to be 1 by 1 matrix of NA
-        numAllocated += createDoubleArray(1, &t);
-        numAllocated += setDim(1, 1, &t);
-      } else {
-        numAllocated += createDoubleArray(zDim*zDim, &t);
-        numAllocated += setDim(zDim, zDim, &t);
+        // allocate memory for cov_zz
+        if (FLAG_covFile.empty()) {
+          /// if skip covFile, then just set cov to be 1 by 1 matrix of NA
+          numAllocated += createDoubleArray(1, &t);
+          numAllocated += setDim(1, 1, &t);
+        } else {
+          numAllocated += createDoubleArray(zDim*zDim, &t);
+          numAllocated += setDim(zDim, zDim, &t);
+        }
+        initDoubleArray(t);
+        SET_VECTOR_ELT(covZZ, j, t);
       }
+
+      // allocate memory for hweCase, hweCtrl
+      numAllocated += createDoubleArray(npos, &t);
       initDoubleArray(t);
-      SET_VECTOR_ELT(covZZ, j, t);
+      SET_VECTOR_ELT(hweCase, j, t);
+
+      numAllocated += createDoubleArray(npos, &t);
+      initDoubleArray(t);
+      SET_VECTOR_ELT(hweCtrl, j, t);
     } // end looping study
     numAllocated += createStringArray(npos, &pos);
     initStringArray(pos);
@@ -557,6 +582,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     SET_VECTOR_ELT(s, RET_ANNO_INDEX, anno);
     SET_VECTOR_ELT(s, RET_COV_XZ_INDEX, covXZ);
     SET_VECTOR_ELT(s, RET_COV_ZZ_INDEX, covZZ);
+    SET_VECTOR_ELT(s, RET_HWE_CASE_INDEX, hweCase);
+    SET_VECTOR_ELT(s, RET_HWE_CTRL_INDEX, hweCtrl);
         
     SET_VECTOR_ELT(ret, i, s);
   };
@@ -592,6 +619,27 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     const int PVAL_FILE_PVAL_COL = pvalHeader.get("PVALUE");
     const int PVAL_FILE_ANNO_COL = pvalHeader.get("ANNO");
 
+    Maximum maximum;
+    const int PVAL_FILE_MIN_COLUMN_NUM = maximum
+                                         .add(PVAL_FILE_CHROM_COL)
+                                         .add(PVAL_FILE_POS_COL)
+                                         .add(PVAL_FILE_REF_COL)
+                                         .add(PVAL_FILE_ALT_COL)
+                                         .add(PVAL_FILE_NINFORMATIVE_COL)
+                                         .add(PVAL_FILE_AF_COL)
+                                         .add(PVAL_FILE_AC_COL)
+                                         .add(PVAL_FILE_CALLRATE_COL)
+                                         .add(PVAL_FILE_HWE_COL)
+                                         .add(PVAL_FILE_NREF_COL)
+                                         .add(PVAL_FILE_NHET_COL)
+                                         .add(PVAL_FILE_NALT_COL)
+                                         .add(PVAL_FILE_USTAT_COL)
+                                         .add(PVAL_FILE_SQRTVSTAT_COL)
+                                         .add(PVAL_FILE_EFFECT_COL)
+                                         .add(PVAL_FILE_PVAL_COL)
+                                         .add(PVAL_FILE_ANNO_COL)
+                                         .max();
+                                         
     if (PVAL_FILE_CHROM_COL < 0 ||
         PVAL_FILE_POS_COL < 0 ||
         PVAL_FILE_REF_COL < 0 ||
@@ -631,6 +679,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
       double tempDouble;
       while( tr.readLine(&line) ){
         stringNaturalTokenize(line, " \t", &fd);
+        if (fd.size() <= PVAL_FILE_MIN_COLUMN_NUM) continue;
         p = fd[PVAL_FILE_CHROM_COL];
         p += ':';
         p += fd[PVAL_FILE_POS_COL];
@@ -685,12 +734,32 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           REAL(s)[idx] = tempDouble;
         }
 
-        if ( str2double(fd[PVAL_FILE_HWE_COL], &tempDouble) ) {
-          v = VECTOR_ELT(u, RET_HWE_INDEX);
-          s = VECTOR_ELT(v, study); // hwe
-          REAL(s)[idx] = tempDouble;
+        // hwe field may have one pvalue or three pvalue (all:case:control)
+        std::vector<std::string> hwePvalues;
+        // REprintf("hwe = %s\n", fd[PVAL_FILE_HWE_COL].c_str());
+        stringTokenize(fd[PVAL_FILE_HWE_COL], ":", &hwePvalues);
+        if (!hwePvalues.empty()) {
+          if ( str2double(hwePvalues[0], &tempDouble) ) {
+            v = VECTOR_ELT(u, RET_HWE_INDEX);
+            s = VECTOR_ELT(v, study); // hwe
+            REAL(s)[idx] = tempDouble;
+          }
+          if (hwePvalues.size() == 3) { // hwe_all:hwe_case:hwe_ctrl
+            if ( str2double(hwePvalues[1], &tempDouble) ) {
+              v = VECTOR_ELT(u, RET_HWE_CASE_INDEX);
+              s = VECTOR_ELT(v, study); // hwe
+              REAL(s)[idx] = tempDouble;
+            }
+            if ( str2double(hwePvalues[2], &tempDouble) ) {
+              v = VECTOR_ELT(u, RET_HWE_CTRL_INDEX);
+              s = VECTOR_ELT(v, study); // hwe
+              REAL(s)[idx] = tempDouble;
+            }
+          }
+        }  else {
+          REprintf("HWE column has incorrect value [ %s ]", fd[PVAL_FILE_HWE_COL].c_str());
         }
-
+        
         if ( str2int(fd[PVAL_FILE_NREF_COL], &tempInt) ) {
           v = VECTOR_ELT(u, RET_NREF_INDEX);
           s = VECTOR_ELT(v, study); // nref
@@ -799,6 +868,15 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
       const int COV_FILE_POS_COL = covHeader.get("MARKER_POS");
       const int COV_FILE_COV_COL = covHeader.get("COV");
 
+      Maximum maximum;
+      const int COV_FILE_MIN_COLUMN_NUM = maximum
+                                          .add(COV_FILE_CHROM_COL)
+                                          .add(COV_FILE_START_COL)
+                                          .add(COV_FILE_END_COL)
+                                          .add(COV_FILE_NUM_MARKER_COL)
+                                          .add(COV_FILE_POS_COL)
+                                          .add(COV_FILE_COV_COL)
+                                          .max();
       if (COV_FILE_CHROM_COL < 0 ||
           COV_FILE_START_COL < 0 ||
           COV_FILE_END_COL < 0 ||
@@ -807,7 +885,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           COV_FILE_COV_COL < 0 ) {
         REprintf("Study [ %s ] does not have all necessary headers\n", FLAG_covFile[study].c_str());
       }
-
+      
+      
       // loop per gene
       for (size_t idx = 0; idx < geneRange.size(); ++idx) {
         const std::string& gene = geneRange.keyAt(idx);
@@ -818,7 +897,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
         const std::map< std::string, int>& location2idx = geneLocationMap[gene];
 
         std::set<std::string> processedSite ;
-        
+
+        // REprintf("Read file %s ", FLAG_covFile[study].c_str());
         TabixReader tr(FLAG_covFile[study]);
         tr.addRange(range);
         tr.mergeRange();
@@ -828,14 +908,22 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           // REprintf("line = %s\n", line.c_str());
 
           stringNaturalTokenize(line, " \t", &fd);
-
+          if (fd.size() <= COV_FILE_MIN_COLUMN_NUM) continue;
+          
           const std::string& chrom = fd[COV_FILE_CHROM_COL];
-
-          // Rprintf("pos: %s\n", fd[COV_FILE_COV_COL].c_str());
+          // REprintf("pos: %s\n", fd[COV_FILE_COV_COL].c_str());
           stringNaturalTokenize(fd[COV_FILE_POS_COL], ',', &pos);
           stringNaturalTokenize(fd[COV_FILE_COV_COL], ':', &covArray);          
           stringNaturalTokenize(covArray[0], ',', &cov);
-          
+
+          if (pos.empty()) {
+            REprintf("No position found in [ %s ]\n", line.c_str());
+            continue;
+          }
+          if (covArray.empty()) {
+            REprintf("No covariance matrices found in [ %s ]\n", line.c_str());
+            continue;
+          }
           if (pos.size() != cov.size()) {
             REprintf("position length does not equal to covariance length\n");
             continue;
@@ -869,12 +957,15 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           if (covArray.size() == 1) continue;
 
           // now loading covXZ, covZZ
-          // REprintf("read covXZ\n");
+          REprintf("read covXZ\n");
           v = VECTOR_ELT(u, RET_COV_XZ_INDEX);  // cov is the 6th element in the list
           s = VECTOR_ELT(v, study);
           stringNaturalTokenize(covArray[1], ',', &covXZ);
           // REprintf("covXZ = %s\n", covArray[1].c_str());
           int zDim = zDims[study];
+          if (covXZ.size() != zDim) {
+            REprintf("CovXZ has wrong dimension (Covariance column = [ %s ])\n", fd[COV_FILE_COV_COL].c_str() );
+          }
           for (size_t j = 0; j < zDim; ++j) {
             pj = chrom + ":" + pos[0];
             // REprintf("pj = %s, covXZ[j] = %s\n", pj.c_str(), covXZ[j].c_str());
@@ -891,6 +982,9 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           v = VECTOR_ELT(u, RET_COV_ZZ_INDEX);  // cov is the 6th element in the list
           s = VECTOR_ELT(v, study);
           stringNaturalTokenize(covArray[2], ',', &covZZ);
+          if (zDim * (zDim + 1) / 2 != covZZ.size()) {
+            REprintf("CovXZ has wrong dimension (Covariance column = [ %s ])\n", fd[COV_FILE_COV_COL].c_str() );
+          }
           // REprintf("covZZ = %s\n", covArray[2].c_str());
           // Z is stored like this:
           // 1
@@ -975,6 +1069,16 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
   const int COV_FILE_POS_COL = covHeader.get("MARKER_POS");
   const int COV_FILE_COV_COL = covHeader.get("COV");
 
+  Maximum maximum;
+  const int COV_FILE_MIN_COLUMN_NUM = maximum
+                                      .add(COV_FILE_CHROM_COL)
+                                      .add(COV_FILE_START_COL)
+                                      .add(COV_FILE_END_COL)
+                                      .add(COV_FILE_NUM_MARKER_COL)
+                                      .add(COV_FILE_POS_COL)
+                                      .add(COV_FILE_COV_COL)
+                                      .max();
+  
   if (COV_FILE_CHROM_COL < 0 &&
       COV_FILE_START_COL < 0 &&
       COV_FILE_END_COL < 0 &&
@@ -1024,6 +1128,7 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
       // Rprintf("%s\n", s);
       line = s;
       stringTokenize(line, "\t", &fd);
+      if (fd.size() <= COV_FILE_MIN_COLUMN_NUM) continue;
       // if (fd[COV_FILE_NUM_MARKER_COL] == "1") continue; // only self covariance
       lineNo ++;
 
@@ -1037,6 +1142,14 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
       }
       stringTokenize(fd[COV_FILE_POS_COL], ',', &fdPos);
       stringTokenize(fd[COV_FILE_COV_COL], ',', &fdCov);
+      if (fdPos.empty()) {
+        REprintf("No position found in [ %s ]\n", line.c_str());
+        continue;
+      }
+      if (fdCov.empty()) {
+        REprintf("No covariance matrices found in [ %s ]\n", line.c_str());
+        continue;
+      }
       if (fdPos.size() != fdCov.size()) {
         REprintf("Malformated pos and cov line\n");
         continue;
@@ -1212,6 +1325,27 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
   const int PVAL_FILE_ANNO_COL = pvalHeader.get("ANNO");
   const int PVAL_FILE_ANNOFULL_COL = pvalHeader.get("ANNOFULL");
 
+    Maximum maximum;
+    const int PVAL_FILE_MIN_COLUMN_NUM = maximum
+                                         .add(PVAL_FILE_CHROM_COL)
+                                         .add(PVAL_FILE_POS_COL)
+                                         .add(PVAL_FILE_REF_COL)
+                                         .add(PVAL_FILE_ALT_COL)
+                                         .add(PVAL_FILE_NINFORMATIVE_COL)
+                                         .add(PVAL_FILE_AF_COL)
+                                         .add(PVAL_FILE_AC_COL)
+                                         .add(PVAL_FILE_CALLRATE_COL)
+                                         .add(PVAL_FILE_HWE_COL)
+                                         .add(PVAL_FILE_NREF_COL)
+                                         .add(PVAL_FILE_NHET_COL)
+                                         .add(PVAL_FILE_NALT_COL)
+                                         .add(PVAL_FILE_USTAT_COL)
+                                         .add(PVAL_FILE_SQRTVSTAT_COL)
+                                         .add(PVAL_FILE_EFFECT_COL)
+                                         .add(PVAL_FILE_PVAL_COL)
+                                         .add(PVAL_FILE_ANNO_COL)
+                                         .max();
+  
   if (PVAL_FILE_CHROM_COL < 0 ||
       PVAL_FILE_POS_COL < 0 ||
       PVAL_FILE_REF_COL < 0 ||
@@ -1267,6 +1401,7 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
   while (tr.readLine(&line)) {
     // Rprintf("read a line: %s\n", line.c_str());
     stringNaturalTokenize(line, "\t ", &fd);
+    if (fd.size() <= PVAL_FILE_MIN_COLUMN_NUM) continue;
     int pos = atoi(fd[PVAL_FILE_POS_COL]);
 
     // check consistent column number
@@ -1328,7 +1463,7 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
   numAllocated += storeDoubleResult(af, ret, retListIdx++);
   numAllocated += storeIntResult(ac, ret, retListIdx++);
   numAllocated += storeDoubleResult(callRate, ret, retListIdx++);
-  numAllocated += storeDoubleResult(hwe, ret, retListIdx++);
+  numAllocated += storeResult(hwe, ret, retListIdx++); // hwe may have three number (all:case:ctrl)
   numAllocated += storeIntResult(nref, ret, retListIdx++);
   numAllocated += storeIntResult(nhet, ret, retListIdx++);
   numAllocated += storeIntResult(nalt, ret, retListIdx++);
