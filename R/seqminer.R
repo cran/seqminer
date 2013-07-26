@@ -24,6 +24,7 @@ hasIndex <- function(fileName) {
   if (file.exists(paste(fileName, ".tbi", sep = ""))) {
     return (TRUE)
   } else {
+    print("Cannot find index file (you can create it using: [ tabix -p vcf FILE_NAME.vcf.gz ])")  
     return (FALSE)
   }
 }

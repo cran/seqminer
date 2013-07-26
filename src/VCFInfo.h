@@ -54,8 +54,10 @@ public:
           value.beg = end + 1;
           state = 1;
         } else if (state == 1) {
-          REprintf("Possible wrong format in %s\n", this->parsed.c_str());
-          return;
+          // this mean the value part has '=' e.g. KEY=(VALUE1=VALUE2);
+          // we will just by pass it.
+          ++ end;
+          continue;
         } else {
           REprintf("Corrupted state!\n");
           //assert(false);

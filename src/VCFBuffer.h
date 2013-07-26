@@ -1,8 +1,9 @@
 #ifndef _VCFBUFFER_H_
 #define _VCFBUFFER_H_
 
-#include <cassert>
+// #include <cassert>
 #include "R.h"
+
 class VCFBuffer {
 public:
 VCFBuffer():buf(NULL), len(0), bufLen(0) {};

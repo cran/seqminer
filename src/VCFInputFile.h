@@ -201,7 +201,9 @@ public:
             this->line = ti_line;
             ret = this->record.parse(this->line);
             if (ret) {
+              REprintf("Parsing failed...");
               reportReadError(this->line);
+              return false;
             }
             if (!this->passFilter())
               continue;
@@ -223,7 +225,9 @@ public:
             this->line = ti_line;
             ret = this->record.parse(this->line);
             if (ret) {
+              REprintf("Parsing failed %s:%d", __FILE__, __LINE__);
               reportReadError(this->line);
+              return false;
             }
             if (!this->passFilter())
               continue;
@@ -237,7 +241,9 @@ public:
         if (this->fp->readLine(&this->line)){
           ret = this->record.parse(this->line);
           if (ret) {
+            REprintf("Parsing failed %s:%d", __FILE__, __LINE__);
             reportReadError(this->line);
+            return false;
           }
           if (!this->passFilter())
             continue;

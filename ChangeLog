@@ -1,3 +1,11 @@
+2013-07-28  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Allow loading score statistics only (skipping covariance files)
+
+2013-07-26  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support site only VCF files
+
 2013-05-25  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Add support for binary trait

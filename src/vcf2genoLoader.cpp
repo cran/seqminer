@@ -214,8 +214,6 @@ SEXP readVCF2List(VCFInputFile* vin,
                   const std::set<std::string>& FLAG_vcfColumn,
                   const std::vector<std::string>& FLAG_infoTag,
                   const std::vector<std::string>& FLAG_indvTag) {
-
-
   // Rprintf("vcfColumn.size() = %u\n", FLAG_vcfColumn.size());
   // Rprintf("vcfInfo.size() = %u\n", FLAG_infoTag.size());
   // Rprintf("vcfIndv.size() = %u\n", FLAG_indvTag.size());
@@ -353,6 +351,7 @@ SEXP readVCF2List(VCFInputFile* vin,
   std::vector<std::string> listNames;
   int retListIdx = 0;
   if (FLAG_vcfColumn.count("CHROM")) {
+    REprintf("XXX: chrom.size() = %d\n", (int)chrom.size());
     numAllocated += storeResult(chrom, ret, retListIdx++);
     listNames.push_back("CHROM");
   }

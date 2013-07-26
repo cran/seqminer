@@ -369,6 +369,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   setAttrib(ret, R_NamesSymbol, geneNames);
 
   // create n, maf, p, cov...
+  // REprintf("create n, maf, p, cov..\n");
   std::vector<std::string> names;
   names.push_back("ref");
   names.push_back("alt");
@@ -390,11 +391,14 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   names.push_back("covXZ");
   names.push_back("covZZ");
 
+  // REprintf("create zDims\n");
   std::vector<size_t> zDims(FLAG_covFile.size(), 0);
   // GeneLocationMap::iterator iter = geneLocationMap.begin();
   for ( int i = 0;
         i < geneLocationMap.size();
         ++i) {
+    // REprintf("i = %d\n", i);
+    // REprintf("names.size() = %zu\n", names.size());
     //        iter != geneLocationMap.end() ; ++iter, ++i){
     SEXP s = VECTOR_ELT(ret, i);
     numAllocated += createList(names.size(), &s); // a list with 10 elements: ref, alt, n, maf, stat, direction, p, cov, pos, anno
@@ -495,6 +499,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
       SET_VECTOR_ELT(cov, j, t);
 
       // allocate memory for cov_xz
+      if (FLAG_covFile.size() == 0) continue;
       CovFileFormat covHeader;
       if (covHeader.open(FLAG_covFile[j]) < 0 ){
         REprintf("Study [ %s ] does not have valid file header \n", FLAG_covFile[j].c_str());
@@ -555,7 +560,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
         
     SET_VECTOR_ELT(ret, i, s);
   };
-
+  // REprintf("finish allocate memory\n");
+                                 
   // return results
   Rprintf("Read score tests...\n");
   // read pval file and fill in values

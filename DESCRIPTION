@@ -2,20 +2,19 @@ Package: seqminer
 Type: Package
 Title: Efficiently Read Sequencing Data (VCF format, METAL format) into
         R
-Version: 0.5
-Date: 2013-3-12
+Version: 0.7
+Date: 2013-7-26
 Author: Xiaowei Zhan <zhanxw@gmail.com> and Dajiang Liu
-        <dajiang.liu@gmail.com>, with contributions of Jean-loup Gailly
-        <jloup@gzip.org> and Mark Adler
-        <madler@alumni.caltech.edu>(they wrote zlib and provide license
-        so we include zlib source code), Julian Seward
-        <jseward@bzip.org> (this author wrote bzip2 and with BSD
-        license we include bzip2 source codes) and Heng Li
-        <lh3@live.co.uk> (this author wrote tabix and with MIT license
-        we include tabix source codes).
+    <dajiang.liu@gmail.com>, with contributions of Jean-loup Gailly
+    <jloup@gzip.org> and Mark Adler
+    <madler@alumni.caltech.edu>(they wrote zlib and provide license
+    so we include zlib source code), Julian Seward
+    <jseward@bzip.org> (this author wrote bzip2 and with BSD
+    license we include bzip2 source codes) and Heng Li
+    <lh3@live.co.uk> (this author wrote tabix and with MIT license
+    we include tabix source codes).
 Maintainer: Xiaowei Zhan <zhanxw@gmail.com>
-Description: Integrate sequencing data (VCF) or meta-analysis results
-        in R
+Description: Integrate sequencing data (VCF) or meta-analysis results in R
 Copyright: We have used the following software and made minimal
         necessary changes: Zlib, Jean-loup Gailly <jloup@gzip.org> and
         Mark Adler <madler@alumni.caltech.edu> (License:
@@ -31,7 +30,7 @@ Copyright: We have used the following software and made minimal
 License: GPL
 URL: http://zhanxw.com/seqminer
 Collate: 'seqminer.R'
-Packaged: 2013-05-28 16:00:52 UTC; zhanxw
+Packaged: 2013-07-29 02:43:48 UTC; zhanxw
 Repository: CRAN
-Date/Publication: 2013-05-28 22:40:02
+Date/Publication: 2013-07-29 21:30:06
 NeedsCompilation: yes

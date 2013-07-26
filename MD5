@@ -1,7 +1,7 @@
-b3eb134422583f4f592022c8cb825f5b *ChangeLog
-f57bc9babe82c46d4b52fa585ba32fc4 *DESCRIPTION
+41bb5ea5db96eeba77a4f6d2ff2b1db6 *ChangeLog
+33bc67a352b2f55b203f682428180931 *DESCRIPTION
 e545d365365cb5e6cb4b8682a720497e *NAMESPACE
-39d5aa015c554419353b071a8f0d7f31 *R/seqminer.R
+0e9a1e90f905edf2f40b56eb3bc2a092 *R/seqminer.R
 ddeb76cd34e791893c0f539fdab879bb *bzip2.LICENSE
 dbe49534045bebcd393d3d0d5ccec28a *bzip2.README
 92e80e3f2469def75b00dd990b6520a3 *configure
@@ -55,7 +55,7 @@ ed89460fc7151a3bfc200b066c30ee23 *src/SimpleMatrix.h
 58477c57a019604a1fd2480597c377ca *src/TypeConversion.h
 7e44626bee9969473c4970346f7693bb *src/Utils.cpp
 8bd4b0a3b18c889844ab4b49532f7c57 *src/Utils.h
-1e917beac40230572aa04d79f137bad1 *src/VCFBuffer.h
+354557b9450e958598141e4a1ca25425 *src/VCFBuffer.h
 6dd8895b1f308a6f48202f0f54ee7ad2 *src/VCFConstant.h
 5b880d5d70e2740296963c2fa59b5428 *src/VCFExtractor.h
 cd9af145da827e809947e0f915171e1b *src/VCFFilter.h
@@ -65,11 +65,11 @@ cd9af145da827e809947e0f915171e1b *src/VCFFilter.h
 47590e10745ed94857230e87700200db *src/VCFIndividual.cpp
 ff41af0fa67d5e91ccc7d9b66986a9b3 *src/VCFIndividual.h
 552321d7a3b6481df8133c33e0d5c104 *src/VCFInfo.cpp
-1da0a696fd6611b44493ac4f710b7d87 *src/VCFInfo.h
+9c67c0226efd1fa4abbf983e20755859 *src/VCFInfo.h
 0ca54f5c0208ad7a2832b61a21ac06b4 *src/VCFInputFile.cpp
-1218948673a8d666ec6a01971ace09c2 *src/VCFInputFile.h
+35284d026e12d003a4754a97fd03b1a5 *src/VCFInputFile.h
 dc2fd142e35674a1b5acdc2045b64607 *src/VCFOutputFile.h
-4a0dd3bde829fc6657bdcc75cbc5fb0a *src/VCFRecord.h
+f847d5fd6668bec3c37e88f55d02e48f *src/VCFRecord.h
 58c30e048f64b8bd851799393a7df1d5 *src/VCFUtil.cpp
 e9e2d549f9cdaf5f06505e30fb64ef8e *src/VCFUtil.h
 c99de6988f92eec0eb978e4298303d7d *src/VCFValue.h
@@ -114,7 +114,7 @@ ec87be89b9bcca8ced80a70f857e823b *src/inftrees.h
 002183a8bd7985f13aeed46440503c1d *src/kstring.c
 b22824b2f9f72abb22fa6c24ac74583b *src/kstring.h
 1fa3a687fb32f1dce8e7b5f11453398f *src/randtable.c
-f798e72fc56516def8ea165d504a07bf *src/rvMetaLoader.cpp
+1a56a7c535945293fa8615a0c7ce3959 *src/rvMetaLoader.cpp
 1652c2f4d6ab6f9180ac08c84d1f76ba *src/rvMetaLoader.h
 6547530546cff3244357ea9bc96c0378 *src/seqminer.c
 9ea09d7361b319cb5e4ca2d752a70e9d *src/tabix.h
@@ -123,7 +123,7 @@ f8bafb87ecd2ea4f76854eb19cf51c9e *src/tabixLoader.h
 1cb01bcc5130eb867b23d6cc38745b4a *src/trees.c
 51fdcb3e2ccf60ca13c06920c89296a3 *src/trees.h
 e62eee8757fecfc2cfbf2dda8956097e *src/uncompr.c
-8bad3f6aea1cceb783a39a3044b7b255 *src/vcf2genoLoader.cpp
+8c24c8ebaa47d21a7b5d1e1c5370df59 *src/vcf2genoLoader.cpp
 e7d01db88c60614c76e804c601770cca *src/vcf2genoLoader.h
 ae0ff652c3313d1b5cb7e5e45febd0cc *src/zconf.h
 f454cab418099da4ed65aec38bc0db80 *src/zlib.h

@@ -75,12 +75,15 @@ public:
     this->parsed[this->filt.end] = '\0';
 
     if ( (ret = (this->info.parseTill(this->parsed, this->filt.end + 1, '\t') ))) {
-      REprintf("Error when parsing INFO [ %s ]\n", vcfLine.c_str());
-      return -1;
+      if (ret < 0) { // ret < 0 meaning some errors happened.
+        REprintf("Error when parsing INFO [ %s ]\n", vcfLine.c_str());
+        return -1;
+      }
     }      
     this->parsed[this->info.end] = '\0';
     this->vcfInfo.parse(this->info); // lazy parse inside VCFInfo
-
+    if (ret > 0) return 0; // INFO is the last VCF column, so no more fields to parse.
+    
     if ( (ret = (this->format.parseTill(this->parsed, this->info.end + 1, '\t') ))){
       REprintf("Error when parsing FORMAT [ %s ]\n", vcfLine.c_str());
       return -1;
@@ -133,7 +136,8 @@ public:
     std::vector<std::string> sa;
     stringTokenize(line, '\t', &sa);
     if (sa.size() <= 9){
-      FATAL("not enough people in the VCF (VCF does not contain genotype and individuals?)");
+      // REprintf("Input file does not contain any samples!\n");
+      return;
     }
     for (unsigned int i = 9; i < sa.size(); i++ ) {
       int idx = i - 9;
