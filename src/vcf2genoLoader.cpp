@@ -153,7 +153,7 @@ SEXP impl_readVCFToMatrixByRange(SEXP arg_fileName, SEXP arg_range, SEXP arg_ann
   numAllocated += setListNames(FLAG_range, &ans);
   
   for (int i = 0; i < nGene; ++i) {
-    // REprintf("range = %s\n", FLAG_range.c_str());
+    // REprintf("range = %s\n", FLAG_range[i].c_str());
     VCFExtractor vin(FLAG_fileName.c_str());
     vin.setRangeList(FLAG_range[i].c_str());
 
@@ -222,6 +222,7 @@ SEXP impl_readVCFToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_g
       vin.setRangeList(range.c_str());
     else {
       warning("Gene name [ %s ] does not exists in provided gene file", FLAG_geneName[i].c_str());
+      UNPROTECT(numAllocated);
       return (ans);
     };
 
@@ -377,7 +378,6 @@ SEXP readVCF2List(VCFInputFile* vin,
   std::vector<std::string> listNames;
   int retListIdx = 0;
   if (FLAG_vcfColumn.count("CHROM")) {
-    REprintf("XXX: chrom.size() = %d\n", (int)chrom.size());
     numAllocated += storeResult(chrom, ret, retListIdx++);
     listNames.push_back("CHROM");
   }
