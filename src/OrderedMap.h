@@ -84,11 +84,11 @@ class OrderedMap{
         for (unsigned int i = 0; i != this->size(); i ++ ){
             KEY& k = this->keyAt(i);
             if (other.find(k))
-                *overlap++;
+                (*overlap)++;
             else
-                *thisUniqueKeys++;
+                (*thisUniqueKeys)++;
         }
-        *otherUniqueKeys = other.size() - *overlap;
+        *otherUniqueKeys = other->size() - *overlap;
     }
     unsigned int size() const { return this->keyVec.size();} ;
     void clear() {
@@ -114,7 +114,7 @@ inline int numberVectorAsMap(const std::vector<KEY>& input,
     if (output->find(input[i])){
       continue;
     }
-    const int s = output.size();
+    const int s = output->size();
     output[input[i]] = s;
   }
   return 0;

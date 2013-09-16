@@ -12,6 +12,10 @@ KHASH_MAP_INIT_STR(str2id, int)
 #define drand48() ((double)rand() / RAND_MAX)
 #endif
 
+#ifndef __GNUC__
+#include <alloca.h>
+#endif
+
 // FIXME: valgrind report a memory leak in this function. Probably it does not get deallocated...
 void *bcf_build_refhash(bcf_hdr_t *h)
 {

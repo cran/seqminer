@@ -1,5 +1,5 @@
 d01a118e39f07aebf0e6f2c20480318b *ChangeLog
-3b1116d1bc1436674f9a6aebc673a83f *DESCRIPTION
+394734968fe0f9f8fb8518f52322d60b *DESCRIPTION
 5dddedc37b0f792031695f083a52b3d8 *LICENSE
 f2295e29799bdc51bcb5c1b4af8a7769 *NAMESPACE
 22babc60249228174c1d90ee92e3e288 *R/seqminer.R
@@ -46,7 +46,7 @@ be9a7201c6ec40825118cd53f50f677f *src/Exception.h
 8cdc077fca4d85ad8865818c26078ca8 *src/IO.h
 452538bf33dc4bb5bdfd912fa5c4d37c *src/Makevars.in
 35ab78cec79cc06f404e0e0eeac81dba *src/Maximum.h
-972b2dfb8439e39114862475643d8fb2 *src/OrderedMap.h
+38e3aa0d8bd5b57cb57694bd4e1c45ac *src/OrderedMap.h
 a0cb740bd8ce684c99351d099e4bc26c *src/PatternMatch.cpp
 99e9112b8d7dc4a8137be090242d1f11 *src/PatternMatch.h
 10a321be45f3709dc6e77da323e0bc98 *src/PeopleSet.cpp
@@ -90,7 +90,7 @@ aba13a3883d7d117af33a6d8fe8c1ed1 *src/bam_endian.h
 a6b6c0b958dfb0f0ff80d62c155edafa *src/bcf.c
 613fc63007d9a00f264af2666fea9a04 *src/bcf.h
 211ee67983ce33eb930c49e1266fcf23 *src/bcf_index.c
-56877f27a963f708a766418e501da11b *src/bcfutils.c
+f0a41df6253eaf09e6140d3e10d1c351 *src/bcfutils.c
 a9f135cf6c369a13d43510eaff9c983b *src/bedidx.c
 071589f63cdc9bd9cbc9fb5902f63c59 *src/bgzf.c
 abd042e94b527d534410175167a07e4a *src/bgzf.h
