@@ -261,6 +261,23 @@ rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
   .Call("readScoreByRange", scoreTestFiles, tabixRange, PACKAGE="seqminer");
 };
 
+#' Read skew by range from METAL-format files. 
+#'
+#' @param skewFile character, a skew file (rvtests outputs using --meta skew)
+#' @param tabixRange  character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @return an 3-dimensional array of skewness within given range
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' skewFileName = system.file("rvtests/rvtest.MetaSkew.assoc.gz", package = "seqminer")
+#' cfh <- rvmeta.readSkewByRange(skewFileName, "1:196621007-196716634")
+rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
+  stopifnot(file.exists(skewFile))
+  storage.mode(skewFile) <- "character"
+  storage.mode(tabixRange) <- "character"
+  .Call("readSkewByRange", skewFile, tabixRange, PACKAGE="seqminer");
+};
+
 #' Read tabix file, similar to running tabix in command line.
 #'
 #' @param tabixFile character, an tabix indexed file
@@ -270,13 +287,86 @@ rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
 #' @examples
 #' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-#' snp <- tabix(fileName, "1:196621007-196621007")
+#' snp <- tabix(fileName, "1:196623337-196632470")
 tabix <- function(tabixFile, tabixRange) {
   stopifnot(file.exists(tabixFile))
   storage.mode(tabixFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readTabixByRange", tabixFile, tabixRange, PACKAGE="seqminer");
 }
+
+#' Read tabix file, similar to running tabix in command line.
+#'
+#' @param tabixFile character, an tabix indexed file
+#' @param skippedLine  logitcal, whether to read tabix skipped lines (when used 'tabix -S NUM')
+#' @return a list
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+#' snp <- tabix.read.header(fileName)
+tabix.read.header <- function(tabixFile, skippedLine = FALSE) {
+    stopifnot(file.exists(tabixFile))
+    storage.mode(tabixFile) <- "character"
+    header <- .Call("readTabixHeader", tabixFile, PACKAGE="seqminer");
+    ret <- list(header = header)
+    if (skippedLine) {
+        skipped <- .Call("readTabixSkippedLine", tabixFile, PACKAGE="seqminer");
+        ret[[length(ret) + 1]] <- skipped
+        names(ret)[2] <- "skippedLine"
+    }
+    ret
+}
+
+#' Read tabix file, similar to running tabix in command line.
+#'
+#' @param tabixFile character, an tabix indexed file
+#' @param tabixRange  character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @param col.names logical, use tabix file header as result headers (default: TRUE)
+#' @param stringsAsFactors logical, store loaded data as factors (default: FALSE)
+#' @return data frame, each elements is an individual line
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+#' snp <- tabix.read.table(fileName, "1:196623337-196632470")
+tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsFactors = FALSE) {
+  stopifnot(file.exists(tabixFile))
+  storage.mode(tabixFile) <- "character"
+  storage.mode(tabixRange) <- "character"
+  header <- .Call("readTabixHeader", tabixFile, PACKAGE = "seqminer")
+  body <- .Call("readTabixByRange", tabixFile, tabixRange, PACKAGE="seqminer");
+
+  ## parse body to a table
+  body <- do.call(rbind, str_split(body, "\t"))
+  body <- as.data.frame(body, stringsAsFactors = FALSE)
+  if (ncol(body) > 0) {
+      for (i in 1:ncol(body)) {
+          body[,i] <- type.convert(body[,i], as.is = !stringsAsFactors)        
+      }
+  
+      num.col <- ncol(body)
+      header <- header[nchar(header) > 0]
+      if (length(header) == 0 || !col.names) {
+          colNames <- paste0("V", 1L:num.col)
+      } else {
+          hdrLine <- header[length(header)]
+          hdrLine <- str_replace(hdrLine, "^#", "")
+          colNames <- make.names(str_split(hdrLine, "\t")[[1]])
+          if (length(colNames) > ncol(body)) {
+              colNames <- colNames[1:ncol(body)]
+          } else if (length(colNames) < ncol(body)) {
+              tmpNames <- paste0("V", 1L:num.col)
+              tmpNames[1:length(colNames )] <- colNames
+              colNames <- tmpNames
+          }
+      }
+      colnames(body) <- colNames
+  }
+  
+  body
+}
+
 
 .onAttach <- function(libname, pkgname){
   newVersionLink = "http://zhanxw.com:8080/seqminer/version"

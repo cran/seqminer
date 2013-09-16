@@ -1,17 +1,17 @@
-\name{tabix}
-\alias{tabix}
+\name{tabix.read.header}
+\alias{tabix.read.header}
 \title{Read tabix file, similar to running tabix in command line.}
 \usage{
-  tabix(tabixFile, tabixRange)
+  tabix.read.header(tabixFile, skippedLine = FALSE)
 }
 \arguments{
   \item{tabixFile}{character, an tabix indexed file}
 
-  \item{tabixRange}{character, a text indicating which
-  range in the VCF file to extract. e.g. 1:100-200}
+  \item{skippedLine}{logitcal, whether to read tabix
+  skipped lines (when used 'tabix -S NUM')}
 }
 \value{
-  character vector, each elements is an individual line
+  a list
 }
 \description{
   Read tabix file, similar to running tabix in command
@@ -19,7 +19,7 @@
 }
 \examples{
 fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-snp <- tabix(fileName, "1:196623337-196632470")
+snp <- tabix.read.header(fileName)
 }
 \seealso{
   http://zhanxw.com/seqminer/ for online manual and
