@@ -2,7 +2,7 @@
 \alias{rvmeta.writeScoreData}
 \title{Write score-based association statistics files.}
 \usage{
-rvmeta.writeScoreData(rvmetaData, outName)
+rvmeta.writeScoreData(rvmetaData, outName, createIndex = FALSE)
 }
 \arguments{
   \item{rvmetaData}{a list vector. It's usually read by
@@ -10,6 +10,9 @@ rvmeta.writeScoreData(rvmetaData, outName)
 
   \item{outName}{character, a text indicating output file
   prefix}
+
+  \item{createIndex}{boolean, (default FALSE), whether or
+  not to create the index}
 }
 \value{
 TRUE only if succeed

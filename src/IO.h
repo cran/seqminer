@@ -31,7 +31,7 @@ typedef enum FileType {
   BZIP2 = 2,
 #endif
   BGZIP = 3,
-  UNKNOWN = 99
+  IO_FILE_TYPE_UNKNOWN = 99
 } FileType;
 
 /**
@@ -51,7 +51,7 @@ public:
 #ifdef HAVE_BZIP2
     BZIP2 = 2,
 #endif
-    UNKNOWN = 99
+    IO_FILE_TYPE_UNKNOWN = 99
   } FileType;
   virtual ~AbstractFileReader() {}; // make it virtual so subclass types can close file handle
   static AbstractFileReader* open(const char* fileName);

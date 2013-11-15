@@ -7,8 +7,8 @@ tabix.read.header(tabixFile, skippedLine = FALSE)
 \arguments{
   \item{tabixFile}{character, an tabix indexed file}
 
-  \item{skippedLine}{logitcal, whether to read tabix
-  skipped lines (when used 'tabix -S NUM')}
+  \item{skippedLine}{logical, whether to read tabix skipped
+  lines (when used 'tabix -S NUM')}
 }
 \value{
 a list

@@ -27,6 +27,7 @@ void VCFInputFile::setRangeMode() {
     } else {
       this->mode = VCFInputFile::VCF_RANGE_MODE;
     }
+
   } else if (mode == VCF_RANGE_MODE) {
     if (this->autoMergeRange) {
       this->tabixReader->mergeRange();
@@ -104,7 +105,8 @@ void VCFInputFile::init(const char* fn) {
   this->fp = NULL;
   this->tabixReader = NULL;
   this->bcfReader = NULL;
-
+  this->autoMergeRange = false;
+  
   // check whether file exists.
   FILE* fp = fopen(fn, "rb");
   if (!fp) {
@@ -113,7 +115,7 @@ void VCFInputFile::init(const char* fn) {
   }
   fclose(fp);
 
-  bool headerLoaded;
+  bool headerLoaded = false;
   // use file name to check file type
   if (endsWith(fn, ".bcf") || endsWith(fn, ".bcf.gz")) {
     this->mode = BCF_MODE;
@@ -211,4 +213,5 @@ void VCFInputFile::setRangeList(const RangeList& rl){
     //abort();
     return;
   }
+
 }

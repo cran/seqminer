@@ -1,4 +1,25 @@
-2014-01-26  Xiaowei Zhan  <zhanxw@dumbo.csgstat.sph.umich.edu>
+2014-04-13  zhanxw  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix an initialization problem to pass UBSAN check
+	* Support compilation in Windows
+
+2014-04-13  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add support for Solaris system (x86 Sun Studio 12.3)
+
+2014-04-12  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support more annotation types
+
+2014-04-09  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support basic annotation
+
+2014-03-30  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Change by default not creating tabix index
+
+2014-01-26  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Rename tabix() to tabix.read()
 	* Add tabix.createIndex()

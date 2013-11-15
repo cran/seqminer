@@ -76,7 +76,7 @@ class MetaFileFormat{
   }
   void dump() {
     REprintf("Missing header:\n");
-    for (std::set<std::string, int>::const_iterator it = missingKey.begin();
+    for (std::set<std::string>::const_iterator it = missingKey.begin();
          it != missingKey.end();
          ++it) {
       REprintf("[ %s ] \n", it->c_str());

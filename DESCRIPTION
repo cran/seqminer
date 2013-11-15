@@ -2,12 +2,12 @@ Package: seqminer
 Type: Package
 Title: Efficiently Read Sequence Data (VCF format, BCF format and METAL
         format) into R
-Version: 2.2
+Version: 2.7
 Date: 2013-11-15
 Author: Xiaowei Zhan <zhanxw@gmail.com> and Dajiang Liu
     <dajiang.liu@gmail.com>, with contributions of Jean-loup Gailly
     <jloup@gzip.org> and Mark Adler
-    <madler@alumni.caltech.edu>(they wrote zlib and provide license
+    <madler@alumni.caltech.edu> (they wrote zlib and provide license
     so we include zlib source code), Julian Seward
     <jseward@bzip.org> (this author wrote bzip2 and with BSD
     license we include bzip2 source codes) and Heng Li
@@ -29,9 +29,9 @@ Copyright: We have used the following software and made minimal
         pointer arithmetics.
 License: GPL | file LICENSE
 URL: http://zhanxw.com/seqminer
-Packaged: 2014-01-26 23:29:35 UTC; zhanxw
+Packaged: 2014-04-14 01:59:13 UTC; zhanxw
 Repository: CRAN
-Date/Publication: 2014-01-27 10:58:35
+Date/Publication: 2014-04-14 18:37:50
 Depends: stringr
-Suggests: testthat, SKAT, STARSEQ
+Suggests: testthat
 NeedsCompilation: yes
