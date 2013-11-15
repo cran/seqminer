@@ -628,11 +628,8 @@ makeAnnotationParameter <- function(param = NULL) {
 #' @export
 #' @seealso makeAnnotationParameter
 #' @examples
-#' reference = system.file("tabanno/test.fa", package = "seqminer")
-#' refBase <- getRefBase(reference, chrom = c(1, 1), pos = c(1, 2), len = c(1, 1))
-#'
 #' param <- list(reference = system.file("tabanno/test.fa", package = "seqminer"),
-#'                   geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
+#'               geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
 #' param <- makeAnnotationParameter(param)
 #' print(param)
 #' annotateGene(param, c("1", "1"), c(3, 5) , c("A", "C"), c("G", "C"))
@@ -700,6 +697,8 @@ annotateVcf <- function(inVcf, outVcf, params) {
         stop("Stop due to critical error")
     }
 
+    storage.mode(inVcf) <- "character"
+    storage.mode(outVcf) <- "character"
     .Call("anno", inVcf, outVcf, params)
 }
 
@@ -725,5 +724,41 @@ annotatePlain <- function(inFile, outFile, params) {
         cat(res[[2]])
         stop("Stop due to critical error")
     }
+    storage.mode(inFile) <- "character"
+    storage.mode(outFile) <- "character"
     .Call("anno", inFile, outFile, params)
+}
+
+#' Test whether a vector of positions are inside given ranges
+#' @param positions characters, positions. e.g. c("1:2-3", "1:4")
+#' @param rangeList character, ranges, e.g. "1:1-3,1:2-4"
+#' @return logical vector, TRUE/FALSE/NA
+#' @export
+#' @examples
+#' positions <- c("1:2-3", "1:4", "XX")
+#' ranges <- "1:1-3,1:2-4,1:5-10"
+#' isInRange(positions, ranges)
+isInRange <- function(positions, rangeList) {
+    storage.mode(positions) <- "character"
+    storage.mode(rangeList) <- "character"
+    .Call("isInRange", positions, rangeList)
+}
+
+#' Extract pair of positions by ranges
+#' @param covData a covariance matrix with positions as dimnames
+#' @param rangeList1 character specify a range
+#' @param rangeList2 character specify a range
+#' @return a covariance matrix 
+#' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
+#' cfh <- rvmeta.readCovByRange(covFileName, "1:196621007-196716634")
+#' rangeList1 <- "1:196621007-196700000"
+#' rangeList2 <- "1:196700000-196716634"
+#' getCovPair(cfh, rangeList1, rangeList2)
+getCovPair <- function(covData, rangeList1, rangeList2) {
+    pos <- dimnames(covData)[1][[1]]
+    idx1 <- isInRange(pos, rangeList1)
+    idx2 <- isInRange(pos, rangeList2)
+    ret <- covData[idx1, idx2]
+    dimnames(ret) <- list(pos[idx1], pos[idx2])
+    ret
 }

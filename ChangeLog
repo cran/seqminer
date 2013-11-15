@@ -1,3 +1,19 @@
+2014-04-18  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix address sanitizer warnings
+
+2014-04-17  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add function to extract covariance by paris
+
+2014-04-14  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Enclose citation information
+
+2014-04-14  zhanxw  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Improve stability when read tabix file
+
 2014-04-13  zhanxw  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Fix an initialization problem to pass UBSAN check

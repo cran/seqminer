@@ -53,8 +53,13 @@ int parseParameter(SEXP param, const std::string& key, const int def) {
   }
 }
 
+int parseParameter(SEXP param, const char* key, const int def) {
+  std::string k = key;
+  return parseParameter(param, k, def);
+}
+     
 bool parseParameter(SEXP param, const std::string& key, const bool def) {
-  int ret = 0;
+  bool ret = false;
   SEXP val = getListElement(param, key.c_str());
   if (val == R_NilValue) {
     return def;
@@ -67,6 +72,11 @@ bool parseParameter(SEXP param, const std::string& key, const bool def) {
     }
     return def;
   }
+}
+
+bool parseParameter(SEXP param, const char* key, const bool def) {
+  std::string k  =key;
+  return parseParameter(param, k, def);
 }
 
 SEXP impl_annotateGene(SEXP s_param,
@@ -85,7 +95,7 @@ SEXP impl_annotateGene(SEXP s_param,
   param.upstreamRange    = parseParameter(s_param, "upstreamRange", 50);
   param.downstreamRange  = parseParameter(s_param, "downstreamRange", 50);
   param.spliceIntoExon   = parseParameter(s_param, "spliceIntoExon", 3);
-  param.spliceIntoIntron = parseParameter(s_param, "spliceIntoIntorn", 8);
+  param.spliceIntoIntron = parseParameter(s_param, "spliceIntoIntron", 8);
 
   // REprintf("param parsed\n");
       
@@ -104,12 +114,26 @@ SEXP impl_annotateGene(SEXP s_param,
   std::vector<std::string> anno(n);
   std::vector<std::string> annoFull(n);
 
+  std::string chrom;
+  int pos;
+  std::string ref;
+  std::string alt;
   for (int i = 0; i < n ; ++i) {
     // REprintf("i = %d\n", i);
-    std::string chrom = CHAR(STRING_ELT(s_chrom, i));
-    int pos = INTEGER(s_pos)[i];
-    std::string ref = CHAR(STRING_ELT(s_ref, i));
-    std::string alt = CHAR(STRING_ELT(s_alt, i));
+    chrom = CHAR(STRING_ELT(s_chrom, i));
+    pos = INTEGER(s_pos)[i];
+    ref = CHAR(STRING_ELT(s_ref, i));
+#ifdef __sun
+    // Solaris will treat the last argument as pair list
+    // very puzzling why this will happen...
+    if (TYPEOF(s_alt) == LISTSXP) {
+      alt = (const char*)(CAR(s_alt)); 
+      s_alt = CDR(s_alt);
+    }
+#else
+    alt = CHAR(STRING_ELT(s_alt, i));
+#endif
+    
     AnnotationString.setFormat("default");
     std::string choppedChr = chopChr(chrom);
 
@@ -162,7 +186,7 @@ SEXP impl_anno(SEXP s_inFile,
   const std::string FLAG_bedFile = parseParameter(s_param, "bed", "");
   const std::string FLAG_genomeScore = parseParameter(s_param, "genomeScore", "");
   const std::string FLAG_tabixFile = parseParameter(s_param, "tabix", "");
-  const bool FLAG_indexOutput = parseParameter(s_param, "indexOutput", FALSE);
+  const bool FLAG_indexOutput = parseParameter(s_param, "indexOutput", false);
   const std::string FLAG_inputFormat = parseParameter(s_param, "inputFormat", "vcf");
   const bool FLAG_checkReference = parseParameter(s_param, "checkReference", TRUE);
 
@@ -170,7 +194,7 @@ SEXP impl_anno(SEXP s_inFile,
   param.upstreamRange    = parseParameter(s_param, "upstreamRange", 50);
   param.downstreamRange  = parseParameter(s_param, "downstreamRange", 50);
   param.spliceIntoExon   = parseParameter(s_param, "spliceIntoExon", 3);
-  param.spliceIntoIntron = parseParameter(s_param, "spliceIntoIntorn", 8);
+  param.spliceIntoIntron = parseParameter(s_param, "spliceIntoIntron", 8);
 
   AnnotationInputFile aif(inputFile, FLAG_inputFormat.c_str());
   aif.openReferenceGenome(reference);
@@ -312,3 +336,4 @@ SEXP impl_getRefBase(SEXP reference,
 
   return ret;
 }
+
