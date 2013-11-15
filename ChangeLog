@@ -1,3 +1,11 @@
+2013-11-19  Xiaowei Zhan  <zhanxw@dumbo.csgstat.sph.umich.edu>
+
+	* Add configure.win and src/config.h to formally suport Windows build.
+
+2013-11-15  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support clang compilation on various platforms (since version 1.9.1)
+
 2013-11-08  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Improve (Important!!) readVCFToListByGene function. Variants belonging to a certain gene can be distinguished.

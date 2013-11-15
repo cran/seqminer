@@ -12,7 +12,9 @@
 
 // Windows platform does not have good autoconf tools, so skip loading config.h
 #ifndef _WIN32
+#ifndef _WIN64
 #include "config.h"
+#endif
 #endif
 
 // cannot forward declare an typdef anonymous struct

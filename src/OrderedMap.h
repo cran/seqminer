@@ -80,6 +80,7 @@ class OrderedMap{
      * compare 
      */
     void compareKey(const OrderedMap<KEY, TYPE>& other, int* overlap, int* thisUniqueKeys, int* otherUniqueKeys) const{
+	(*overlap) = (*thisUniqueKeys) = 0;
         //assert(overlap && thisUniqueKeys && otherUniqueKeys);
         for (unsigned int i = 0; i != this->size(); i ++ ){
             KEY& k = this->keyAt(i);
@@ -88,7 +89,7 @@ class OrderedMap{
             else
                 (*thisUniqueKeys)++;
         }
-        *otherUniqueKeys = other->size() - *overlap;
+        *otherUniqueKeys = other.size() - *overlap;
     }
     unsigned int size() const { return this->keyVec.size();} ;
     void clear() {

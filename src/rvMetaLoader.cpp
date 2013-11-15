@@ -52,6 +52,7 @@ class MetaFileFormat{
     if (get(key) >= 0) // duplicate
       return -1;
     data[key] = val;
+    return 0;
   }
   int get(const std::string& key) {
     std::string k = toupper(key);
