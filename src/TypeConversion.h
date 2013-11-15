@@ -6,7 +6,6 @@
 #include <errno.h>
 #include <limits.h>
 #include <math.h> // for HUGE_VALF, HUGE_VALL
-
 #include <sstream>
 
 ////////////////////////////////////////////////////////////////////////
@@ -46,6 +45,16 @@ template<class T>
 inline std::string toString(T i){
     std::stringstream ss;
     ss << i;
+    return ss.str();
+}
+
+// convert double/float to string type
+// we try to mimic the '%g' in printf
+template<class T>
+inline std::string floatToString(T i){
+    std::stringstream ss;
+    ss.precision(6);
+    ss << std::noshowpoint << i;
     return ss.str();
 }
 

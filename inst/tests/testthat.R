@@ -60,13 +60,13 @@ if (file.exists(outFile)) {
     ## test tabix functions
     test_that("tabix", {
         fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-        snp <- tabix(fileName, "1:196623337-196632470")
+        snp <- tabix.read(fileName, "1:196623337-196632470")
         expect_equal(class(snp), "character")
         expect_equal(length(snp), 3)
     })
     test_that("tabix", {
         fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-        snp <- tabix(fileName, "1:196633607-196633607")
+        snp <- tabix.read(fileName, "1:196633607-196633607")
         expect_equal(class(snp), "character")
         expect_equal(length(snp), 0)
     })
