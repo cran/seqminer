@@ -1627,7 +1627,7 @@ SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
   std::map<std::string, int> index;
   std::vector<std::string> fd;
   std::vector<std::string> result;
-  int nSite;
+  int nSite = 0;
   int nGene = length(arg_data);
   for (int i = 0; i < nGene ; ++i) {
     Rprintf("output %s\n", CHAR(STRING_ELT(getAttrib(arg_data, R_NamesSymbol), i)));

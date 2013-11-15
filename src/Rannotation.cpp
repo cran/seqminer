@@ -57,7 +57,7 @@ int parseParameter(SEXP param, const char* key, const int def) {
   std::string k = key;
   return parseParameter(param, k, def);
 }
-     
+
 bool parseParameter(SEXP param, const std::string& key, const bool def) {
   bool ret = false;
   SEXP val = getListElement(param, key.c_str());
@@ -98,7 +98,7 @@ SEXP impl_annotateGene(SEXP s_param,
   param.spliceIntoIntron = parseParameter(s_param, "spliceIntoIntron", 8);
 
   // REprintf("param parsed\n");
-      
+
   AnnotationInputFile aif;
   AnnotationController controller(aif);
   controller.geneAnnotation.setAnnotationParameter(param);
@@ -108,7 +108,7 @@ SEXP impl_annotateGene(SEXP s_param,
   controller.geneAnnotation.openGeneFile(geneFile, "refFlat");
 
   // REprintf("ready to annotate\n");
-  
+
   // loop input
   int n = LENGTH(s_chrom);
   std::vector<std::string> anno(n);
@@ -127,13 +127,13 @@ SEXP impl_annotateGene(SEXP s_param,
     // Solaris will treat the last argument as pair list
     // very puzzling why this will happen...
     if (TYPEOF(s_alt) == LISTSXP) {
-      alt = (const char*)(CAR(s_alt)); 
+      alt = (const char*)(CAR(s_alt));
       s_alt = CDR(s_alt);
     }
 #else
     alt = CHAR(STRING_ELT(s_alt, i));
 #endif
-    
+
     AnnotationString.setFormat("default");
     std::string choppedChr = chopChr(chrom);
 
@@ -142,7 +142,7 @@ SEXP impl_annotateGene(SEXP s_param,
     result.value("ANNO", &anno[i]);
     result.value("ANNOFULL", &annoFull[i]);
   }
-  
+
   // store results
   REprintf("store results\n");
   int numAllocated = 0;
@@ -209,7 +209,7 @@ SEXP impl_anno(SEXP s_inFile,
 
   // load resources
   if (!FLAG_bedFile.empty()) {
-    REprintf("Use bed file: %s\n", FLAG_bedFile.c_str() );
+    REprintf("Use bed option: %s\n", FLAG_bedFile.c_str() );
     std::vector< std::string> fd;
     std::vector< std::string> bed;
     stringTokenize(FLAG_bedFile, ",", &fd);
@@ -223,7 +223,7 @@ SEXP impl_anno(SEXP s_inFile,
         return ret;
       };
     };
-  };
+  }
   if (!FLAG_genomeScore.empty()){
     // REprintf("Use binary GERP score: %s\n", FLAG_genomeScore.c_str());
     // ga.addGenomeScore("GERP", FLAG_genomeScore.c_str());
@@ -245,32 +245,37 @@ SEXP impl_anno(SEXP s_inFile,
   // parse something like:
   // abc.txt.gz(chrom=1,pos=7,ref=3,alt=4,SIFT=7,PolyPhen=10)
   if(!FLAG_tabixFile.empty()){
-    REprintf("Use tabix file: %s\n", FLAG_tabixFile.c_str() );
-    ModelParser mp;
-    mp.parse(FLAG_tabixFile);
-    std::string fn = mp.getName();
-    int chrom, pos, ref, alt;
-    mp.assign("chrom", &chrom).assign("pos", &pos).assign("ref", &ref).assign("alt", &alt);
-    REprintf("Column %d, %d, %d and %d in tabix file will be matched to chromosome, position, reference allele, alternative allele respectively.\n", chrom, pos, ref, alt);
-    TabixData* tabix = new TabixData(fn.c_str(), chrom, pos, ref, alt);
+    REprintf("Use tabix option: %s\n", FLAG_tabixFile.c_str() );
+    std::vector< std::string> fd;
+    stringTokenize(FLAG_bedFile, ")", &fd); /// use ')' to split is for convenience
+    for (size_t i = 0; i < fd.size(); ++i) {
+      fd[i].push_back(')');
+      ModelParser mp;
+      mp.parse(FLAG_tabixFile);
+      std::string fn = mp.getName();
+      int chrom, pos, ref, alt;
+      mp.assign("chrom", &chrom, 1).assign("pos", &pos, 2).assign("ref", &ref, 3).assign("alt", &alt, 4);
+      REprintf("Column %d, %d, %d and %d in tabix file will be matched to chromosome, position, reference allele, alternative allele respectively.\n", chrom, pos, ref, alt);
+      TabixData* tabix = new TabixData(fn.c_str(), chrom, pos, ref, alt);
 
-    for (size_t i = 0; i < mp.getParam().size(); ++i) {
-      if ( tolower(mp.getParam()[i]) == "chrom" ||
-           tolower(mp.getParam()[i]) == "pos" ||
-           tolower(mp.getParam()[i]) == "ref" ||
-           tolower(mp.getParam()[i]) == "alt") {
-        continue;
+      for (size_t i = 0; i < mp.getParam().size(); ++i) {
+        if ( tolower(mp.getParam()[i]) == "chrom" ||
+             tolower(mp.getParam()[i]) == "pos" ||
+             tolower(mp.getParam()[i]) == "ref" ||
+             tolower(mp.getParam()[i]) == "alt") {
+          continue;
+        }
+        int intValue;
+        if (str2int(mp.getValue(i), &intValue)) {
+          tabix->addTag(mp.getParam()[i], intValue);
+          REprintf("Tag %s will be from column %d in tabix file\n", mp.getParam()[i].c_str(), intValue);
+        } else {
+          tabix->addTag(mp.getParam()[i], mp.getValue(i));
+          REprintf("Tag %s will be from column %s (from header) in tabix file\n", mp.getParam()[i].c_str(), mp.getValue(i).c_str());
+        }
       }
-      int intValue;
-      if (str2int(mp.getValue(i), &intValue)) {
-        tabix->addTag(mp.getParam()[i], intValue);
-        REprintf("Tag %s will be from column %d in tabix file\n", mp.getParam()[i].c_str(), intValue);
-      } else {
-        tabix->addTag(mp.getParam()[i], mp.getValue(i));
-        REprintf("Tag %s will be from column %s (from header) in tabix file\n", mp.getParam()[i].c_str(), mp.getValue(i).c_str());
-      }
+      controller.addTabixData(tabix);
     }
-    controller.addTabixData(tabix);
   } // end halding tabix database
 
   // annotate, store results
@@ -336,4 +341,3 @@ SEXP impl_getRefBase(SEXP reference,
 
   return ret;
 }
-
