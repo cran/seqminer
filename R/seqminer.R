@@ -44,7 +44,7 @@ hasIndex <- function(fileName) {
   if (endsWith(fileName, ".vcf.gz")) {
     fIndex <- paste(fileName, ".tbi", sep = "")
     if (!file.exists(fIndex)) {
-      stop(gettextf("Cannot find index file (you can create it using: [ tabix -p vcf %s ])") , fileName)
+      stop(gettextf("Cannot find index file (you can create it using: [ tabix -p vcf %s ])" , fileName))
       return (FALSE)
     }
   }
@@ -82,7 +82,7 @@ hasIndex <- function(fileName) {
   return (TRUE)
 }
 
-#' Read a gene from VCF file and return a genotypes matrix
+#' Read a gene from VCF file and return a genotype matrix
 #'
 #' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
 #' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
@@ -101,9 +101,9 @@ readVCFToMatrixByRange <- function(fileName, range, annoType) {
   .Call("readVCFToMatrixByRange", fileName, range, annoType, PACKAGE="seqminer");
 };
 
-#' Read a gene from VCF file and return a genotypes matrix
+#' Read a gene from VCF file and return a genotype matrix
 #'
-#' @param fileName charactr, represents an input VCF file (Bgzipped, with Tabix index)
+#' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
 #' @param geneFile character, a text file listing all genes in refFlat format
 #' @param geneName character vector, which gene(s) to be extracted
 #' @param annoType character, annotated types you would like to extract, such as "Nonsynonymous", "Synonymous". This can be left empty.
@@ -584,7 +584,7 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
     status <- FALSE
     msg <- c(msg, "Gene file does not exist")
   }
-  if (param$geneFileFormat != "refFlat") {
+  if (! param$geneFileFormat %in% c("refFlat", "knownGene", "refGene")) {
     status <- FALSE
     msg <- c(msg, "Gene file format does not exist")
   }
@@ -721,7 +721,7 @@ annotateGene <- function(param, chrom, position, ref, alt) {
   param <- makeAnnotationParameter(param)
   res <- validateAnnotationParameter(param)
   if (!res[[1]])  {
-    cat(res[[2]])
+    cat(paste(res[[2]], collapse = "\n"))
     stop("Stop due to critical error")
   }
   stopifnot(length(chrom) > 0)
@@ -777,7 +777,7 @@ annotateVcf <- function(inVcf, outVcf, params) {
   param <- makeAnnotationParameter(param)
   res <- validateAnnotationParameter(param)
   if (!res[[1]])  {
-    cat(res[[2]])
+    cat(paste(res[[2]], collapse = "\n"))
     stop("Stop due to critical error")
   }
 
