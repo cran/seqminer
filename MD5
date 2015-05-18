@@ -1,12 +1,12 @@
 cb68355c4601c165de39fe0ef98d88f0 *ChangeLog
-1f951795d4a49743f94d6aea13e891bd *DESCRIPTION
+a59242a02a8a4f98fe91f467ccf8bf14 *DESCRIPTION
 50c28547d51e8cbb9a908e6696fedb86 *LICENSE
 1bbde4ac4ad752ce23129a7fdd274238 *NAMESPACE
 86e73b2a24383e51a05e7ce9198f73b7 *R/seqminer.R
-f69ad0c28f93636098d9f5c325da8dda *README.md
+ca26fe4095537700c16fd206f4981d1e *README.md
 131a236039d88977475269c6ee6c6e2c *cleanup
-0e057e348c5044b648af5373533e155d *configure
-ce894a250667fc6d500ca56c3248197d *configure.ac
+fb5ab8978d07fbd4bf0c1fc697a82992 *configure
+9ae2d4052422c8a79c0e0b4be9f55aac *configure.ac
 62e8ae8f7711c3681d616f7c01e667eb *configure.win
 7bb67b9779288c68f4983a0663a2d262 *demo/00Index
 e39927036debbb6042ebcf8920d82a23 *demo/workflow.R
@@ -96,8 +96,8 @@ d2592825b8f3bd8ace8d350859568488 *src/Gene.h
 b7d9dfdfe8afaee484c6633309deeaf6 *src/IO.cpp
 4d1b969552cde23c382f9250f8f85bb5 *src/IO.h
 422d83b84e05058cdff9a2032fc2b196 *src/LogFile.h
-0b219f19604cb3c07d57d2e108255cdb *src/Makevars.in
-12e92a9d2f1122993a246724ca854fbb *src/Makevars.win
+e77b7cfab85a027ac85f85cef3eece83 *src/Makevars.in
+1d24c1cf530f5b3dfbcdc4940c032b25 *src/Makevars.win
 d9fbc638f23c8635a9fd66910e89dfd2 *src/Maximum.h
 ec4ad4b37abe9e5d654ed2879e0fb200 *src/ModelParser.h
 9279857f27d2551483166caab8cbc1b0 *src/OrderedMap.h
@@ -160,7 +160,7 @@ a9f135cf6c369a13d43510eaff9c983b *src/bedidx.c
 abd042e94b527d534410175167a07e4a *src/bgzf.h
 5fbc88f708793e02b648d0fe48fbbe06 *src/config.h.in
 48cd8fc534ffa1468ad3a66fcf280712 *src/khash.h
-84beda244fb4eaa8b176a1d3d2edf3bb *src/knetfile.c
+319c23308b7d3b72cf6e2806d58d0e9c *src/knetfile.c
 1f03681d00e0cc9f8f3bd7142424f25d *src/knetfile.h
 89e7b91e8dd04627d7ed7833322e8ce9 *src/kseq.h
 05ffa87e772c91c82b5a7f33dea80aea *src/ksort.h

@@ -38,7 +38,13 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+
+#include "knetfile.h"
+#include "R.h"
+
+
 #ifdef _WIN32
+
 #include <winsock.h>
 #else
 #include <netdb.h>
@@ -46,8 +52,6 @@
 #include <sys/socket.h>
 #endif
 
-#include "knetfile.h"
-#include "R.h"
 
 /* In winsock.h, the type of a socket is SOCKET, which is: "typedef
  * u_int SOCKET". An invalid SOCKET is: "(SOCKET)(~0)", or signed
@@ -414,7 +418,13 @@ int khttp_connect_file(knetFile *fp)
         fp->fd = socket_connect(fp->host, fp->port);
         buf = calloc(0x10000, 1); // FIXME: I am lazy... But in principle, 64KB should be large enough.
         l += sprintf(buf + l, "GET %s HTTP/1.0\r\nHost: %s\r\n", fp->path, fp->http_host);
-        l += sprintf(buf + l, "Range: bytes=%lld-\r\n", (long long)fp->offset);
+#ifndef _WIN32
+        l += sprintf(buf + l, "Range: bytes=%lld-\r\n", (long long)fp->offset);        
+#else
+        char tmp[32];
+        int64tostr(tmp, fp->offset);
+        l += sprintf(buf + l, "Range: bytes=%s-\r\n", tmp);
+#endif
         l += sprintf(buf + l, "\r\n");
         netwrite(fp->fd, buf, l);
         l = 0;
