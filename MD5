@@ -1,8 +1,8 @@
-cb68355c4601c165de39fe0ef98d88f0 *ChangeLog
-a59242a02a8a4f98fe91f467ccf8bf14 *DESCRIPTION
+9fe7c15d02ab199c1b3d41aa812d15a5 *ChangeLog
+d77f567e49da6c39e3b3d84e82f64158 *DESCRIPTION
 50c28547d51e8cbb9a908e6696fedb86 *LICENSE
 1bbde4ac4ad752ce23129a7fdd274238 *NAMESPACE
-86e73b2a24383e51a05e7ce9198f73b7 *R/seqminer.R
+41221a2583cced774e19dcb98cb385ea *R/seqminer.R
 ca26fe4095537700c16fd206f4981d1e *README.md
 131a236039d88977475269c6ee6c6e2c *cleanup
 fb5ab8978d07fbd4bf0c1fc697a82992 *configure
@@ -166,7 +166,7 @@ abd042e94b527d534410175167a07e4a *src/bgzf.h
 05ffa87e772c91c82b5a7f33dea80aea *src/ksort.h
 6b1b42bbbbe56cdd2bdec966f4fbc3e7 *src/kstring.c
 e6fa98213a711d4a816a9c35a0a90bdb *src/kstring.h
-a66f2c0e43e2cbaefd042f4fb259096f *src/rvMetaLoader.cpp
+cb1582a1de62dc12591b19ef838c5c1b *src/rvMetaLoader.cpp
 a82d04cdb18e2e01c7f08b979e5c44e4 *src/rvMetaLoader.h
 b7bfd98edaf8764867e12fcf20ce0053 *src/seqForStat.c
 48a97b0705735bf0093031dc9928304c *src/seqminer.c
