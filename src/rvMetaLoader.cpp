@@ -109,6 +109,13 @@ size_t findCovariateDimension(const std::string& fn, int column) {
   return ret;
 }
 
+int sumInt(const int a, const int b, const int c) {
+  if (a == NA_INTEGER || b == NA_INTEGER || c == NA_INTEGER) {
+    return NA_INTEGER;
+  }
+  return (a + b + c);
+}
+
 /**
  * Assign values in @param val separated by ":" to
  * u[idx1, idx2, idx3][study][idx]
@@ -133,12 +140,12 @@ int assignInt(const std::string& val, SEXP u, int idx1, int idx2, int idx3,
   if (values.size() == 3) {  // af_all:af_case:af_ctrl
     if (str2int(values[1], &temp)) {
       v = VECTOR_ELT(u, idx2);
-      s = VECTOR_ELT(v, study);  // af
+      s = VECTOR_ELT(v, study);  // af_case
       INTEGER(s)[idx] = temp;
     }
     if (str2int(values[2], &temp)) {
       v = VECTOR_ELT(u, idx3);
-      s = VECTOR_ELT(v, study);  // af
+      s = VECTOR_ELT(v, study);  // af_ctrl
       INTEGER(s)[idx] = temp;
     }
   }
@@ -667,6 +674,7 @@ SEXP impl_rvMetaReadData(
         PVAL_FILE_EFFECT_COL < 0 || PVAL_FILE_PVAL_COL < 0) {
       REprintf("Study [ %s ] does not have all required headers.\n",
                FLAG_pvalFile[study].c_str());
+      continue;
     }
 
     // loop per gene
@@ -844,15 +852,21 @@ SEXP impl_rvMetaReadData(
                    fd[PVAL_FILE_NALT_COL].c_str());
         }
         INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CASE_INDEX), study))[idx] =
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CASE_INDEX), study))[idx] +
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CASE_INDEX), study))[idx] +
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CASE_INDEX), study))[idx];
-        
+            sumInt(INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CASE_INDEX),
+                                      study))[idx],
+                   INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CASE_INDEX),
+                                      study))[idx],
+                   INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CASE_INDEX),
+                                      study))[idx]);
+
         INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CTRL_INDEX), study))[idx] =
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CTRL_INDEX), study))[idx] +
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CTRL_INDEX), study))[idx] +
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CTRL_INDEX), study))[idx];
-        
+            sumInt(INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CTRL_INDEX),
+                                      study))[idx],
+                   INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CTRL_INDEX),
+                                      study))[idx],
+                   INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CTRL_INDEX),
+                                      study))[idx]);
+
         if (str2double(fd[PVAL_FILE_USTAT_COL], &tempDouble)) {
           v = VECTOR_ELT(u, RET_USTAT_INDEX);
           s = VECTOR_ELT(v, study);  // ustat
@@ -954,6 +968,7 @@ SEXP impl_rvMetaReadData(
           COV_FILE_POS_COL < 0 || COV_FILE_COV_COL < 0) {
         REprintf("Study [ %s ] does not have all necessary headers\n",
                  FLAG_covFile[study].c_str());
+        continue;
       }
 
       // loop per gene
@@ -1175,17 +1190,18 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
                                           .add(COV_FILE_COV_COL)
                                           .max();
 
-  if (COV_FILE_CHROM_COL < 0 && COV_FILE_START_COL < 0 &&
-      COV_FILE_END_COL < 0 && COV_FILE_NUM_MARKER_COL < 0 &&
-      COV_FILE_POS_COL < 0 && COV_FILE_COV_COL < 0) {
+  if (COV_FILE_CHROM_COL < 0 || COV_FILE_START_COL < 0 ||
+      COV_FILE_END_COL < 0 || COV_FILE_NUM_MARKER_COL < 0 ||
+      COV_FILE_POS_COL < 0 || COV_FILE_COV_COL < 0) {
     REprintf("File [ %s ] does not have all necessary headers\n",
              FLAG_covFile.c_str());
+    return ret;
   }
 
   // Rprintf("open %s\n", FLAG_covFile.c_str());
   tabix_t* t = ti_open(FLAG_covFile.c_str(), 0);
   if (t == 0) {
-    REprintf("Cannot open %s file!\n", FLAG_covFile.c_str());
+    // REprintf("Cannot open %s file!\n", FLAG_covFile.c_str());
     return ret;
   }
   // Rprintf("open OK\n");

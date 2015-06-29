@@ -1,1 +1,3 @@
-workflow	An example of a typical workflow
+vcf.workflow	Demonstrate how to extract information from VCF/BCF files
+meta.workflow	Demonstrate how to extract information from summary statistics files
+annotate	Demonstrate how to annotate summary statistics files

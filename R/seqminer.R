@@ -120,7 +120,7 @@ readVCFToMatrixByRange <- function(fileName, range, annoType) {
   storage.mode(range)    <- "character"
   storage.mode(annoType) <- "character"
   .Call("readVCFToMatrixByRange", fileName, range, annoType, PACKAGE="seqminer");
-};
+}
 
 #' Read a gene from VCF file and return a genotype matrix
 #'
@@ -145,7 +145,7 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
   storage.mode(geneName) <- "character"
   storage.mode(annoType) <- "character"
   .Call("readVCFToMatrixByGene", fileName, geneFile, geneName, annoType, PACKAGE="seqminer");
-};
+}
 
 #' Read information from VCF file in a given range and return a list
 #'
@@ -172,7 +172,7 @@ readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, 
   storage.mode(vcfInfo)  <- "character"
   storage.mode(vcfIndv)  <- "character"
   .Call("readVCFToListByRange", fileName, range, annoType, vcfColumn, vcfInfo, vcfIndv, PACKAGE="seqminer");
-};
+}
 
 #' Read information from VCF file in a given range and return a list
 #'
@@ -204,7 +204,7 @@ readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColum
   storage.mode(vcfInfo)  <- "character"
   storage.mode(vcfIndv)  <- "character"
   .Call("readVCFToListByGene", fileName, geneFile, geneName, annoType, vcfColumn, vcfInfo, vcfIndv, PACKAGE="seqminer");
-};
+}
 
 #' Read association statistics by gene from METAL-format files. Both score statistics and covariance statistics will be extracted.
 #'
@@ -233,7 +233,7 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) 
   } else {
     .Call("rvMetaReadDataByGene", scoreTestFiles, covFiles, geneFile, geneName, PACKAGE="seqminer");
   }
-};
+}
 
 #' Read association statistics by range from METAL-format files. Both score statistics and covariance statistics will be extracted.
 #'
@@ -278,7 +278,7 @@ rvmeta.readCovByRange <- function(covFile, tabixRange) {
   storage.mode(covFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readCovByRange", covFile, tabixRange, PACKAGE="seqminer");
-};
+}
 
 #' Read score test statistics by range from METAL-format files.
 #'
@@ -295,7 +295,7 @@ rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readScoreByRange", scoreTestFiles, tabixRange, PACKAGE="seqminer");
-};
+}
 
 #' Read skew by range from METAL-format files.
 #'
@@ -312,7 +312,7 @@ rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
   storage.mode(skewFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readSkewByRange", skewFile, tabixRange, PACKAGE="seqminer");
-};
+}
 
 #' Read tabix file, similar to running tabix in command line.
 #'
@@ -374,11 +374,11 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
   body <- .Call("readTabixByRange", tabixFile, tabixRange, PACKAGE="seqminer");
 
   ## parse body to a table
-  body <- do.call(rbind, str_split(body, "\t"))
+  body <- do.call(rbind, strsplit(body, "\t"))
   body <- as.data.frame(body, stringsAsFactors = FALSE)
   if (ncol(body) > 0) {
     for (i in 1:ncol(body)) {
-      body[,i] <- type.convert(body[,i], as.is = !stringsAsFactors)
+      body[,i] <- utils::type.convert(body[,i], as.is = !stringsAsFactors)
     }
 
     num.col <- ncol(body)
@@ -387,8 +387,8 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
       colNames <- paste0("V", 1L:num.col)
     } else {
       hdrLine <- header[length(header)]
-      hdrLine <- str_replace(hdrLine, "^#", "")
-      colNames <- make.names(str_split(hdrLine, "\t")[[1]])
+      hdrLine <- sub("^#", "", hdrLine)
+      colNames <- make.names(strsplit(hdrLine, "\t")[[1]])
       if (length(colNames) > ncol(body)) {
         colNames <- colNames[1:ncol(body)]
       } else if (length(colNames) < ncol(body)) {
@@ -433,7 +433,6 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
 #' @param scoreTestFiles character vector, score test output files (rvtests outputs using --meta score)
 #' @return a list of statistics fitted under the null mode (without genetic effects)
 #' @export
-#' @import stringr
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
 #' @examples
 #' scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
@@ -466,9 +465,8 @@ rvmeta.readNullModel <- function(scoreTestFiles) {
     if (is.null(ret) || length(ret) < 1) {
       return(numeric(0))
     }
-    ## library(stringr)
     ## ret <- read.null.model(ret)
-    ret <- lapply(ret, function(x) { str_split(str_replace(x, "## - ", ""), "\t")[[1]]})
+    ret <- lapply(ret, function(x) { strsplit(sub("## - ", "", x), "\t")[[1]]})
     cnames <- ret[[1]]
     ret[[1]] <- NULL
     rnames <- lapply(ret, function(x) {x[1]})
@@ -482,7 +480,7 @@ rvmeta.readNullModel <- function(scoreTestFiles) {
   }
   ret <- lapply(scoreTestFiles, function(x) { model.to.matrix(read.null.model(x))})
   ret
-};
+}
 
 #' Write score-based association statistics files.
 #'
@@ -504,6 +502,7 @@ rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
   if (createIndex) {
     tabix.createIndex.meta(outName)
   }
+  invisible(NULL)
 }
 
 #' Write covariance association statistics files.
@@ -518,11 +517,12 @@ rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
-#' rvmeta.writeCovData(cfh, "cfh.MetaCov.assoc")
+#' rvmeta.writeCovData(cfh, "cfh.MetaCov.assoc.gz")
 rvmeta.writeCovData <- function (rvmetaData, outName) {
   storage.mode(outName) <- "character"
   .Call("rvMetaWriteCovData", rvmetaData, outName, PACKAGE="seqminer");
   tabix.createIndex.meta(outName)
+  invisible(NULL)
 }
 
 #' Create tabix index file, similar to running tabix in command line.
@@ -548,6 +548,7 @@ tabix.createIndex <- function(bgzipFile, sequenceColumn = 1, startColumn = 4, en
   storage.mode(metaChar) <- "character"
   storage.mode(skipLines) <- "integer"
   .Call("createTabixIndex", bgzipFile, sequenceColumn, startColumn, endColumn, metaChar, skipLines, PACKAGE="seqminer");
+  invisible(NULL)
 }
 
 #' Create tabix index for bgzipped VCF file
@@ -562,6 +563,7 @@ tabix.createIndex <- function(bgzipFile, sequenceColumn = 1, startColumn = 4, en
 tabix.createIndex.vcf <- function(bgzipVcfFile) {
   stopifnot(file.exists(bgzipVcfFile))
   tabix.createIndex(bgzipVcfFile, 1, 2, 0, '#', 0)
+  invisible(NULL)
 }
 
 #' Create tabix index for bgzipped MetaScore/MetaCov file
@@ -578,22 +580,23 @@ tabix.createIndex.vcf <- function(bgzipVcfFile) {
 tabix.createIndex.meta <- function(bgzipFile) {
   stopifnot(file.exists(bgzipFile))
   tabix.createIndex(bgzipFile, 1, 2, 2, '#', 0)
+  invisible(NULL)
 }
 
 ##################################################
 ## Annotations --------------------
 ##################################################
 
-#' validate the @param inVcf can be opened, and @param outtVcf can be write to
-#' will stop if errors occur
-#' @param inVcf: input file
-#' @param outVcf: output file
+#' validate the inVcf can be created, and outVcf can be write to.
+#' will stop if any error occurs
+#' @param inVcf input file
+#' @param outVcf output file
 #' @return NULL
 verifyFilename <- function(inVcf, outVcf) {
   if (!file.exists(inVcf)) {
     stop("Cannot open input file")
   }
-  tryCatch(file.create(outVcf), warning = function(w) {stop("Cannot create output file")})
+  tryCatch(file.create(outVcf), warning = function(w) {stop(gettextf("Cannot create output file: %s", outVcf))})
 }
 
 #' Validate annotate parameter is valid
@@ -645,9 +648,9 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
   }
   if (!is.null(param$bed)) {
     ##library(stringr)
-    opt <- str_split(param$bed, ",")
+    opt <- strsplit(param$bed, ",")
     n <- length(opt)
-    parsed <- lapply(opt, function(x){unlist(str_split(x, "="))})
+    parsed <- lapply(opt, function(x){unlist(strsplit(x, "="))})
     for (i in seq_along(n)) {
       if (length(parsed[[i]]) != 2) {
         status <- FALSE
@@ -663,9 +666,9 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
   }
   if (!is.null(param$genomeScore)) {
     ##library(stringr)
-    opt <- str_split(param$genomeScore, ",")
+    opt <- strsplit(param$genomeScore, ",")
     n <- length(opt)
-    parsed <- lapply(opt, function(x){unlist(str_split(x, "="))})
+    parsed <- lapply(opt, function(x){unlist(strsplit(x, "="))})
     for (i in seq_along(n)) {
       if (length(parsed[[i]]) != 2) {
         status <- FALSE
@@ -681,9 +684,9 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
   }
   if (!is.null(param$tabix)) {
     ##library(stringr)
-    opt <- str_split(param$tabix, "),")
+    opt <- strsplit(param$tabix, "),")
     n <- length(opt)
-    parsed <- lapply(opt, function(x){unlist(str_split(x, "\\("))})
+    parsed <- lapply(opt, function(x){unlist(strsplit(x, "\\("))})
     for (i in seq_along(n)) {
       if (length(parsed[[i]]) != 2) {
         status <- FALSE
@@ -729,6 +732,26 @@ makeAnnotationParameter <- function(param = NULL) {
       ret[[names(param)[i]]] <- param[[i]]
     }
   }
+  ## expand tilde
+  if(!is.null(ret$reference)) {
+    ret$reference <- path.expand(ret$reference)
+  }
+  if(!is.null(ret$geneFile)) {
+    ret$geneFile <- path.expand(ret$geneFile)
+  }
+  if(!is.null(ret$codonFile)) {
+    ret$codonFile <- path.expand(ret$codonFile)
+  }
+  if(!is.null(ret$priorityFile)) {
+    ret$priorityFile <- path.expand(ret$priorityFile)
+  }
+  if(!is.null(ret$bed)) {
+    ret$bed <- gsub(pattern = "~", replacement = path.expand("~"), x = ret$bed)
+  }
+  if(!is.null(ret$tabix)) {
+    ret$tabix <- gsub(pattern = "~", replacement = path.expand("~"), x = ret$tabix)
+  }
+
   ## print(ret)
   ret
 }
@@ -817,6 +840,7 @@ annotateVcf <- function(inVcf, outVcf, params) {
   storage.mode(inVcf) <- "character"
   storage.mode(outVcf) <- "character"
   .Call("anno", inVcf, outVcf, params)
+  invisible(NULL)
 }
 
 #' Annotate a plain text file
@@ -846,6 +870,7 @@ annotatePlain <- function(inFile, outFile, params) {
   storage.mode(inFile) <- "character"
   storage.mode(outFile) <- "character"
   .Call("anno", inFile, outFile, params)
+  invisible(NULL)
 }
 
 #' Test whether a vector of positions are inside given ranges
@@ -881,3 +906,71 @@ getCovPair <- function(covData, rangeList1, rangeList2) {
   dimnames(ret) <- list(pos[idx1], pos[idx2])
   ret
 }
+
+#' Test whether directory is writable
+#' @param outDir the name of the directory
+#' @return TRUE if the file is writable
+#' isDirWritable("~")
+isDirWritable <- function(outDir) {
+  name <- tempfile(tmpdir = outDir, fileext = "tmp")
+  ret <- file.create(name, showWarnings = FALSE)
+  if (ret) {
+    unlink(name)
+  }
+  return (ret)
+}
+
+#' Download annotation resources to a directory
+#' @param outputDirectory the directory to store annotation resources
+#' @return will not return anything
+#' @export
+#' @examples
+#' \dontrun{
+#' download.annotation.resource("/tmp")
+#' }
+download.annotation.resource <- function(outputDirectory) {
+  outDir = outputDirectory
+  ## prepare a writable dir
+  if (!dir.exists(outDir)) {
+    message(gettextf("Create output directory: %s", outDir))
+    dir.create(outDir, recursive = TRUE)
+  }
+  if (!isDirWritable(outDir)) {
+    stop(gettextf("Unable to write to directory: %s", outDir))
+  }
+
+  ## download function
+  download <- function(url) {
+    fn <- basename(url)
+    destfile <- file.path(outDir, fn)
+    if (file.exists(destfile)) {
+      warning(gettextf("Overwriting %s", fn))
+    }
+    utils::download.file(url, destfile)
+  }
+  ## download resources
+  message("Begin download TabAnno resource files (human hg19)...")
+
+
+  message("Download reference file and its index:")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/resources/hs37d5.fa")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/resources/hs37d5.fa.fai")
+
+  message("Download gene definition:")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/resources/refFlat_hg19.txt.gz")
+
+  message("Download TabAnno codon definition and annotation priority files:")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/codon.txt")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/priority.txt")
+
+  message("Download completed")
+  message(gettextf("You can begin to use it:"))
+  message(gettextf(" param <- makeAnnotationParameter(list(reference = \"%s\", geneFile = \"%s\", codonFile = \"%s\", priorityFile = \"%s\" ))",
+                   file.path(outDir, "hs37d5.fa"),
+                   file.path(outDir, "refFlat_hg19.txt.gz"),
+                   file.path(outDir, "codon.txt"),
+                   file.path(outDir, "priority.txt")))
+  invisible(NULL)
+}
+
+
