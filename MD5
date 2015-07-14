@@ -1,9 +1,10 @@
-fa64c5556cd9c4e363a3b931ad874704 *ChangeLog
-8885e554b83f3491e6867113a1b82de6 *DESCRIPTION
+b54115fb8610bb48ca4c3d4546745909 *ChangeLog
+c4e092d8e40ee6e56c125c088c181bf2 *DESCRIPTION
 50c28547d51e8cbb9a908e6696fedb86 *LICENSE
 6ea6676404d7f88390eda68f63e72aa4 *NAMESPACE
-8138a6adc094530f784db6b36f5c2422 *R/seqminer.R
-dc2ca718ef3d9dce95163d9d5d117d03 *README.md
+25e18fdc189e61fccf9863a08eaecacf *R/genMakefile.R
+d662773312e57b0d3b6355a0749732cd *R/seqminer.R
+8570f7b85f02dd1c3d21b834e1224ae8 *README.md
 131a236039d88977475269c6ee6c6e2c *cleanup
 f43e526f7804acf3b0fdc8f10bbbbd4c *configure
 62d8f6d197a5152ba0d05836fa2c6bf2 *configure.ac
@@ -12,7 +13,7 @@ a7aa8e76f7e4646af6b644cdf37f2cb7 *demo/00Index
 34ab676ae0614287c6170163dbcc0c44 *demo/annotate.R
 80afcb0fa924316b839b3d56655d05fe *demo/meta.workflow.R
 076b6535f57410f9475402c8748869cf *demo/vcf.workflow.R
-cbbe73bf76dae8a277a19879144cca6b *inst/CITATION
+783f30a03b947ade65eb1006c46de1b7 *inst/CITATION
 1c96de0a2112c8f4cc6fbdb911a29912 *inst/doc/Manual.html
 751c636c82b643e5a9498591b5218032 *inst/rvtests/cfh.refFlat.txt
 b94af6795e947307028d232aee84d501 *inst/rvtests/rvtest.MetaCov.assoc.gz
@@ -124,7 +125,7 @@ baf138407a38de43b7f6296e35271254 *src/Profiler.cpp
 ac4e4cf703592a37a2bd05fd297bd4af *src/R_CPP_interface.cpp
 b986750f74de29d76e2e0250728eb511 *src/R_CPP_interface.h
 976c9bf0d2f8a271883f5f34cef4c2f6 *src/Range.h
-a2d0d32d3ad8fff36d5d31f369b49acd *src/RangeList.cpp
+c240cc9ee76c664a684d0e2b90c0b983 *src/RangeList.cpp
 586681b059463845e359637d9425b9d6 *src/RangeList.h
 923e0a3a4f281a76b3a99e70400873ef *src/Rannotation.cpp
 640a6895fe50cf13777a73d2498986ca *src/Rannotation.h
@@ -133,7 +134,7 @@ a2d0d32d3ad8fff36d5d31f369b49acd *src/RangeList.cpp
 ed89460fc7151a3bfc200b066c30ee23 *src/SimpleMatrix.h
 6689621f7dbc49a740c515e216369be0 *src/SimpleTimer.h
 fa26446157d7f418afe30d19f658363c *src/StringTemplate.h
-a0d0dc50d1e181891dc1109a1b138f5a *src/StringUtil.h
+5575eb01a8fcd58e0971e3fa2d29e031 *src/StringUtil.h
 17a3d14fd1153f81af7b0bce22190cc0 *src/TabixData.h
 bb24ce56abc3fa0ceef2a3b612afe938 *src/TabixReader.h
 a6f33ff1510e19cf36b2f02223bc07b9 *src/Type.h
@@ -180,7 +181,7 @@ a82d04cdb18e2e01c7f08b979e5c44e4 *src/rvMetaLoader.h
 b7bfd98edaf8764867e12fcf20ce0053 *src/seqForStat.c
 48a97b0705735bf0093031dc9928304c *src/seqminer.c
 9ea09d7361b319cb5e4ca2d752a70e9d *src/tabix.h
-dc5b59d84f2eb95b3f6b26818ed9e4d7 *src/tabixLoader.cpp
+5167391521da9e03b0eb29d68714b4dd *src/tabixLoader.cpp
 5c463acce24b036d6912ab184f9de454 *src/tabixLoader.h
 53e6f35860621109da0de128f3207114 *src/tabix_index.c
 53fc599227476643816a4a82f647e9cb *src/vcf.c

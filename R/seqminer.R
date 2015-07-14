@@ -32,6 +32,50 @@ local.file.exists <- function(fileName) {
   return(file.exists(fileName))
 }
 
+#' Check if the inputs are valid tabix range such as chr1:2-300
+#' @param range characer vector
+#' @keywords internal
+#' @examples
+#' valid <- isTabixRange(c("chr1:1-200", "X:1", "1:100-100", "chr1", "1:1-20,1:30-40))
+#' stopifnot(all(valid))
+#' invalid <- isTabixRange(c(":1", "chr1::"":-"))
+#' stopifnot(all(!invalid))
+isTabixRange <- function(range) {
+  isValid <- function(x) {
+    ret = strsplit(x = x, split = ":")[[1]]
+    if (length(ret) == 1) { # e.g. "chr1"
+      return(TRUE)
+    }
+    if (length(ret) != 2) {
+      return(FALSE)
+    }
+    chrom = ret[1]
+    if (nchar(chrom) == 0) {
+      return (FALSE)
+    }
+    ret = strsplit(x = ret[2], split = "-")[[1]]
+    if (length(ret) == 2) {
+      beg = suppressWarnings(as.integer(ret[1]))
+      end = suppressWarnings(as.integer(ret[2]))
+      if (is.na(beg) || is.na(end) || beg > end) {
+        return(FALSE)
+      }
+    } else if (length(ret) == 1) {
+      beg = suppressWarnings(as.integer(ret[1]))
+      if (is.na(beg)) {
+        return(FALSE)
+      }
+    } else {
+      return(FALSE)
+    }
+    return(TRUE)
+  }
+  input <- strsplit(range, ",")
+  do.call(c, lapply(input, function(x){
+    isValid(x)
+    }))
+}
+
 #' Check input file has tabix index
 #'
 #' @param fileName character vector, representing file names an input file name
@@ -116,6 +160,9 @@ hasIndex <- function(fileName) {
 readVCFToMatrixByRange <- function(fileName, range, annoType) {
   stopifnot(local.file.exists(fileName), length(fileName) == 1)
   stopifnot(hasIndex(fileName))
+  stopifnot(all(isTabixRange(range)))
+  fileName <- path.expand(fileName)
+
   storage.mode(fileName) <- "character"
   storage.mode(range)    <- "character"
   storage.mode(annoType) <- "character"
@@ -139,6 +186,7 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
   stopifnot(local.file.exists(fileName), length(fileName) == 1)
   stopifnot(local.file.exists(geneFile), length(geneFile) == 1)
   stopifnot(hasIndex(fileName))
+  fileName <- path.expand(fileName)
 
   storage.mode(fileName) <- "character"
   storage.mode(geneFile) <- "character"
@@ -165,6 +213,9 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
 readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, vcfIndv) {
   stopifnot(local.file.exists(fileName), length(fileName) == 1)
   stopifnot(hasIndex(fileName))
+  stopifnot(all(isTabixRange(range)))
+  fileName <- path.expand(fileName)
+
   storage.mode(fileName) <- "character"
   storage.mode(range)    <- "character"
   storage.mode(annoType) <- "character"
@@ -195,6 +246,7 @@ readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColum
   stopifnot(local.file.exists(fileName), length(fileName) == 1)
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
   stopifnot(hasIndex(fileName))
+  fileName <- path.expand(fileName)
 
   storage.mode(fileName) <- "character"
   storage.mode(geneFile) <- "character"
@@ -224,6 +276,9 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) 
   stopifnot(local.file.exists(scoreTestFiles))
   stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
+  scoreTestFiles <- path.expand(scoreTestFiles)
+  covFiles <- path.expand(covFiles)
+
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(covFiles) <- "character"
   storage.mode(geneFile) <- "character"
@@ -251,6 +306,10 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) 
 rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges) {
   stopifnot(local.file.exists(scoreTestFiles))
   stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
+  stopifnot(all(isTabixRange(ranges)))
+  scoreTestFiles <- path.expand(scoreTestFiles)
+  covFiles <- path.expand(covFiles)
+
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(covFiles) <- "character"
   storage.mode(ranges) <- "character"
@@ -275,6 +334,9 @@ rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges) {
 #' cfh <- rvmeta.readCovByRange(covFileName, "1:196621007-196716634")
 rvmeta.readCovByRange <- function(covFile, tabixRange) {
   stopifnot(local.file.exists(covFile))
+  stopifnot(all(isTabixRange(tabixRange)))
+  covFile <- path.expand(covFile)
+
   storage.mode(covFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readCovByRange", covFile, tabixRange, PACKAGE="seqminer");
@@ -292,6 +354,9 @@ rvmeta.readCovByRange <- function(covFile, tabixRange) {
 #' cfh <- rvmeta.readScoreByRange(scoreFileName, "1:196621007-196716634")
 rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
   stopifnot(local.file.exists(scoreTestFiles))
+  stopifnot(all(isTabixRange(tabixRange)))
+  scoreTestFiles <- path.expand(scoreTestFiles)
+
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readScoreByRange", scoreTestFiles, tabixRange, PACKAGE="seqminer");
@@ -309,6 +374,9 @@ rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
 #' cfh <- rvmeta.readSkewByRange(skewFileName, "1:196621007-196716634")
 rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
   stopifnot(local.file.exists(skewFile))
+  stopifnot(all(isTabixRange(tabixRange)))
+  skewFile <- path.expand(skewFile)
+
   storage.mode(skewFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readSkewByRange", skewFile, tabixRange, PACKAGE="seqminer");
@@ -326,6 +394,9 @@ rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
 #' snp <- tabix.read(fileName, "1:196623337-196632470")
 tabix.read <- function(tabixFile, tabixRange) {
   stopifnot(local.file.exists(tabixFile))
+  stopifnot(all(isTabixRange(tabixRange)))
+  tabixFile <- path.expand(tabixFile)
+
   storage.mode(tabixFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readTabixByRange", tabixFile, tabixRange, PACKAGE="seqminer");
@@ -343,6 +414,8 @@ tabix.read <- function(tabixFile, tabixRange) {
 #' snp <- tabix.read.header(fileName)
 tabix.read.header <- function(tabixFile, skippedLine = FALSE) {
   stopifnot(local.file.exists(tabixFile))
+  tabixFile <- path.expand(tabixFile)
+
   storage.mode(tabixFile) <- "character"
   header <- .Call("readTabixHeader", tabixFile, PACKAGE="seqminer");
   ret <- list(header = header)
@@ -368,6 +441,9 @@ tabix.read.header <- function(tabixFile, skippedLine = FALSE) {
 #' snp <- tabix.read.table(fileName, "1:196623337-196632470")
 tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsFactors = FALSE) {
   stopifnot(local.file.exists(tabixFile))
+  stopifnot(all(isTabixRange(tabixRange)))
+  tabixFile <- path.expand(tabixFile)
+
   storage.mode(tabixFile) <- "character"
   storage.mode(tabixRange) <- "character"
   header <- .Call("readTabixHeader", tabixFile, PACKAGE = "seqminer")
@@ -404,6 +480,7 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
 }
 
 .onAttach <- function(libname, pkgname){
+  # check new version
   newVersionLink = "http://zhanxw.com/seqminer/version"
   timeout <- options("timeout")$timeout
   warn <- options("warn")$warn
@@ -497,6 +574,7 @@ rvmeta.readNullModel <- function(scoreTestFiles) {
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
 #' rvmeta.writeScoreData(cfh, "cfh.MetaScore.assoc")
 rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
+  outName <- path.expand(outName)
   storage.mode(outName) <- "character"
   .Call("rvMetaWriteScoreData", rvmetaData, outName, PACKAGE="seqminer");
   if (createIndex) {
@@ -519,6 +597,7 @@ rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
 #' rvmeta.writeCovData(cfh, "cfh.MetaCov.assoc.gz")
 rvmeta.writeCovData <- function (rvmetaData, outName) {
+  outName <- path.expand(outName)
   storage.mode(outName) <- "character"
   .Call("rvMetaWriteCovData", rvmetaData, outName, PACKAGE="seqminer");
   tabix.createIndex.meta(outName)
@@ -541,6 +620,7 @@ rvmeta.writeCovData <- function (rvmetaData, outName) {
 #' tabix.createIndex(fileName, 1, 2, 0, '#', 0)
 tabix.createIndex <- function(bgzipFile, sequenceColumn = 1, startColumn = 4, endColumn = 5, metaChar = "#", skipLines = 0) {
   stopifnot(file.exists(bgzipFile))
+  bgzipFile <- path.expand(bgzipFile)
   storage.mode(bgzipFile) <- "character"
   storage.mode(sequenceColumn) <- "integer"
   storage.mode(startColumn) <- "integer"
@@ -805,11 +885,12 @@ getRefBase <- function(reference, chrom, position, len = NULL) {
   if (is.null(len)) {
     len <- rep(1, length(position))
   }
+  reference <- path.expand(reference)
+
   storage.mode(reference) <- "character"
   storage.mode(chrom) <- "character"
   storage.mode(position) <- "integer"
   storage.mode(len) <- "integer"
-
   .Call("getRefBase", reference, chrom, position, len, PACKAGE="seqminer")
 }
 
@@ -866,6 +947,8 @@ annotatePlain <- function(inFile, outFile, params) {
     stop("Stop due to critical error")
   }
   verifyFilename(inFile, outFile)
+  inFile <- path.expand(inFile)
+  outFile <- path.expand(outFile)
 
   storage.mode(inFile) <- "character"
   storage.mode(outFile) <- "character"
@@ -972,5 +1055,4 @@ download.annotation.resource <- function(outputDirectory) {
                    file.path(outDir, "priority.txt")))
   invisible(NULL)
 }
-
 
