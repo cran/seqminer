@@ -1,3 +1,9 @@
+2016-05-02  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix header macro (use _DEFAULT_SOURCE)
+	* Fix off-by-one bug when reporting codon number
+	* Fix memory leak
+
 2015-10-20  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Improve code stability

@@ -663,7 +663,6 @@ public:
     int exonNum; // which exon
     int codonNum; // which codon
     int codonPos[3] = {0, 0, 0}; // the codon position
-    /* AnnotationType type; // could be one of */
     int intronNum; // which intron
     bool isEssentialSpliceSite;
 
@@ -671,7 +670,7 @@ public:
       result->add(UPSTREAM);
     } else if (g.isDownstream(variantPos, param.upstreamRange, &dist2Gene)) {
       result->add(DOWNSTREAM);
-    } else if (g.isExon(variantPos, &exonNum)){//, &codonNum, codonPos)) {
+    } else if (g.isExon(variantPos, &exonNum)){
       result->add(EXON);
       if (g.isCoding()) {
         if (g.is5PrimeUtr(variantPos, &utrPos, &utrLen)) {
@@ -722,7 +721,7 @@ public:
               // quick patch about codon number
               char buf[128];
               sprintf(buf, "Base%d/%d",
-                      codonNum + 1, g.getCDSLength());
+                      codonNum, g.getCDSLength());
               s += buf;
               s += WITHIN_GENE_SEPARATOR;
               s += "Codon";

@@ -1,5 +1,5 @@
-5aa7db9ba4a9b125646e4bc3ae9d42c3 *ChangeLog
-f427c37f5c8fc914e6f858135dfe2ff5 *DESCRIPTION
+59aea1747f4eb5045d3d401a9b7837f3 *ChangeLog
+6e660d78c43e37596348f3443073294f *DESCRIPTION
 50c28547d51e8cbb9a908e6696fedb86 *LICENSE
 3afbb52bd93205aa6fbf940ae4e9d567 *NAMESPACE
 c73956e4acc00b9d651f02ae9df0b159 *R/genMakefile.R
@@ -13,7 +13,7 @@ a7aa8e76f7e4646af6b644cdf37f2cb7 *demo/00Index
 34ab676ae0614287c6170163dbcc0c44 *demo/annotate.R
 80afcb0fa924316b839b3d56655d05fe *demo/meta.workflow.R
 076b6535f57410f9475402c8748869cf *demo/vcf.workflow.R
-fbfa0ef201afbcdf2c180a9ff9448c99 *inst/CITATION
+a6361d6bce1120c228079a8f45e16cce *inst/CITATION
 1c96de0a2112c8f4cc6fbdb911a29912 *inst/doc/Manual.html
 751c636c82b643e5a9498591b5218032 *inst/rvtests/cfh.refFlat.txt
 b94af6795e947307028d232aee84d501 *inst/rvtests/rvtest.MetaCov.assoc.gz
@@ -101,7 +101,7 @@ be9a7201c6ec40825118cd53f50f677f *src/Exception.h
 a35ca7176ce98a73cc231422dde7923a *src/FileFormat.h
 a95e5ec7ace400494ce16d20bc1d3ada *src/FreqTable.h
 d2592825b8f3bd8ace8d350859568488 *src/Gene.h
-5fb3d1bfb17ad3abd83d0d30cd905b0f *src/GeneAnnotation.h
+94dbbdd8aabeff6e3bab5472c5d53d95 *src/GeneAnnotation.h
 222b54973e8c0f6de708737c566e73c9 *src/GeneFormat.h
 7e2b3c5bff8130ef64ecb6af89ea3c85 *src/GeneLoader.cpp
 54e44e25de3378d5c46a8c0330f56320 *src/GeneLoader.h
@@ -130,7 +130,7 @@ baf138407a38de43b7f6296e35271254 *src/Profiler.cpp
 ac4e4cf703592a37a2bd05fd297bd4af *src/R_CPP_interface.cpp
 b986750f74de29d76e2e0250728eb511 *src/R_CPP_interface.h
 976c9bf0d2f8a271883f5f34cef4c2f6 *src/Range.h
-c240cc9ee76c664a684d0e2b90c0b983 *src/RangeList.cpp
+e7d14f9f57a60a2d7f4de21d13c05795 *src/RangeList.cpp
 586681b059463845e359637d9425b9d6 *src/RangeList.h
 923e0a3a4f281a76b3a99e70400873ef *src/Rannotation.cpp
 640a6895fe50cf13777a73d2498986ca *src/Rannotation.h
@@ -138,7 +138,7 @@ c240cc9ee76c664a684d0e2b90c0b983 *src/RangeList.cpp
 387eb89d34fe3c3d18b2d93a734d582e *src/SimpleMatrix.cpp
 ed89460fc7151a3bfc200b066c30ee23 *src/SimpleMatrix.h
 6689621f7dbc49a740c515e216369be0 *src/SimpleTimer.h
-fa26446157d7f418afe30d19f658363c *src/StringTemplate.h
+351daac23ba67f5be347bfdeea6fd992 *src/StringTemplate.h
 5575eb01a8fcd58e0971e3fa2d29e031 *src/StringUtil.h
 17a3d14fd1153f81af7b0bce22190cc0 *src/TabixData.h
 bb24ce56abc3fa0ceef2a3b612afe938 *src/TabixReader.h
@@ -168,14 +168,14 @@ c99de6988f92eec0eb978e4298303d7d *src/VCFValue.h
 aba13a3883d7d117af33a6d8fe8c1ed1 *src/bam_endian.h
 eff5a085d8f36bf4a84409e3a1d6f970 *src/bcf.c
 613fc63007d9a00f264af2666fea9a04 *src/bcf.h
-d13f7631c0a81341a0360467c78e02e0 *src/bcf_index.c
+108f3114615821f1b3dcf1e393b51147 *src/bcf_index.c
 c781f162a813b6370d385952c6fffe83 *src/bcfutils.c
-16f046c04a736079b56d6800ccf137da *src/bedidx.c
+4eee226a2462a52685e51c2566de34a1 *src/bedidx.c
 88d96707db87898de91c0cbb3b8b40f6 *src/bgzf.c
 abd042e94b527d534410175167a07e4a *src/bgzf.h
 5fbc88f708793e02b648d0fe48fbbe06 *src/config.h.in
 48cd8fc534ffa1468ad3a66fcf280712 *src/khash.h
-bc4c4daf33b15e7dda3665d4ff587e28 *src/knetfile.c
+5ca9bfc32ebe86340077da8722cfb41d *src/knetfile.c
 1f03681d00e0cc9f8f3bd7142424f25d *src/knetfile.h
 89e7b91e8dd04627d7ed7833322e8ce9 *src/kseq.h
 05ffa87e772c91c82b5a7f33dea80aea *src/ksort.h
@@ -186,10 +186,10 @@ a82d04cdb18e2e01c7f08b979e5c44e4 *src/rvMetaLoader.h
 b7bfd98edaf8764867e12fcf20ce0053 *src/seqForStat.c
 48a97b0705735bf0093031dc9928304c *src/seqminer.c
 9ea09d7361b319cb5e4ca2d752a70e9d *src/tabix.h
-5167391521da9e03b0eb29d68714b4dd *src/tabixLoader.cpp
+028bc1a00972525dfdeff0cc8be816a6 *src/tabixLoader.cpp
 5c463acce24b036d6912ab184f9de454 *src/tabixLoader.h
-5018bd833475834bf55d67196ba7ffc2 *src/tabix_index.c
-d9cfdd322d3afb508c2a38b61091adf8 *src/vcf.c
+2afd58587fb0782a0672539c81c21561 *src/tabix_index.c
+f2a5c8110d9c1fe88ef569fc42c3b77b *src/vcf.c
 656047f89fa33b35e733f932a891da01 *src/vcf2genoLoader.cpp
 e7d01db88c60614c76e804c601770cca *src/vcf2genoLoader.h
 7e96a19db60eacfeabeab2cb47973be6 *tests/tests.R
