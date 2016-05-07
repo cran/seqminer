@@ -1,3 +1,7 @@
+2016-05-04  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Revise DESCRIPTION
+
 2016-05-02  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Fix header macro (use _DEFAULT_SOURCE)
