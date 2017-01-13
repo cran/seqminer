@@ -15,9 +15,9 @@ class Profiler {
   static void dump();
 
   struct Timer {
-    Timer(const char* func) {
-      this->func = func;
-      Profiler::addTimer(func);
+    Timer(const char* func_) {
+      this->func = func_;
+      Profiler::addTimer(func_);
     }
     ~Timer() {
       Profiler::deleteTimer(func);
