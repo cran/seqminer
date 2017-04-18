@@ -11,6 +11,7 @@ print(citation("seqminer"))
 
 library(testthat)
 library(seqminer)
-## test code are under inst/tests
-## test_package("seqminer", reporter="tap")
-test_package("seqminer")
+## ## test code are under inst/tests
+## ## test_package("seqminer", reporter="tap")
+## test_package("seqminer")
+test_check("seqminer")
