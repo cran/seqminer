@@ -1,0 +1,44 @@
+CFLAGS=-I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5
+
+SRC= common/debug.c \
+     common/entropy_common.c \
+     common/error_private.c \
+     common/fse_decompress.c \
+     common/pool.c \
+     common/threading.c \
+     common/xxhash.c \
+     common/zstd_common.c \
+     compress/fse_compress.c \
+     compress/hist.c \
+     compress/huf_compress.c \
+     compress/zstd_compress.c \
+     compress/zstd_double_fast.c \
+     compress/zstd_fast.c \
+     compress/zstd_lazy.c \
+     compress/zstd_ldm.c \
+     compress/zstd_opt.c \
+     compress/zstdmt_compress.c \
+     decompress/huf_decompress.c \
+     decompress/zstd_decompress.c \
+     deprecated/zbuff_common.c \
+     deprecated/zbuff_compress.c \
+     deprecated/zbuff_decompress.c \
+     dictBuilder/cover.c \
+     dictBuilder/divsufsort.c \
+     dictBuilder/fastcover.c \
+     dictBuilder/zdict.c \
+     legacy/zstd_v05.c \
+     legacy/zstd_v06.c \
+     legacy/zstd_v07.c \
+
+OBJ=$(SRC:.c=.o)
+LIB = libzstd.a
+
+all: $(LIB)
+$(LIB): $(OBJ)
+	$(AR) rcs $@ $^
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+# ar rcs libzstd.a common/debug.o common/entropy_common.o common/error_private.o common/fse_decompress.o common/pool.o common/threading.o common/xxhash.o common/zstd_common.o compress/fse_compress.o compress/hist.o compress/huf_compress.o compress/zstd_compress.o compress/zstd_double_fast.o compress/zstd_fast.o compress/zstd_lazy.o compress/zstd_ldm.o compress/zstd_opt.o compress/zstdmt_compress.o decompress/huf_decompress.o decompress/zstd_decompress.o deprecated/zbuff_common.o deprecated/zbuff_compress.o deprecated/zbuff_decompress.o dictBuilder/cover.o dictBuilder/divsufsort.o dictBuilder/fastcover.o dictBuilder/zdict.o legacy/zstd_v05.o legacy/zstd_v06.o legacy/zstd_v07.o

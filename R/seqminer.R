@@ -18,8 +18,8 @@ NULL
 #' @param fileName character vector
 #' @keywords internal
 isURL <- function(fileName) {
-  if (grepl(pattern = "^http://", fileName) ||
-      grepl(pattern = "^ftp://", fileName) ) {
+  if (all(grepl(pattern = "^http://", fileName) |
+          grepl(pattern = "^ftp://", fileName) )) {
     return(TRUE)
   }
   return(FALSE)
@@ -124,9 +124,18 @@ hasIndex <- function(fileName) {
     }
   }
 
+  ## handle BGEN
+  if (endsWith(fileName, ".bgen")) {
+    fIndex <- paste(fileName, ".bgi", sep = "")
+    if (!file.exists(fIndex)) {
+      stop(gettextf("Cannot find index file (you can create it using: [ bgenix -g %s -index ])" , fileName))
+      return (FALSE)
+    }
+  }
+
   ## Check index file
   if (is.null(fIndex)) {
-    stop(gettextf("Cannot guess a valid tabix index, did your file have suffix: .vcf, .vcf.gz, .bcf, or .bcf.gz ?"))
+    stop(gettextf("Cannot guess a valid index, did your file have suffix: .vcf, .vcf.gz, .bcf, .bcf.gz or .bgen ?"))
     return (FALSE)
   }
   if (!file.exists(fIndex)) {
@@ -277,7 +286,7 @@ readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColum
 #' cfh <- rvmeta.readDataByGene(scoreFileName, covFileName, geneFile, "CFH")
 rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName, multiAllelic = FALSE) {
   stopifnot(local.file.exists(scoreTestFiles))
-  stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
+  stopifnot(all(is.null(covFiles)) || (all(local.file.exists(covFiles)) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
   stopifnot(!is.null(multiAllelic))
 
@@ -313,7 +322,7 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName, 
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
 rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges, multiAllelic = FALSE) {
   stopifnot(local.file.exists(scoreTestFiles))
-  stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
+    stopifnot(all(is.null(covFiles)) || (all(local.file.exists(covFiles)) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(all(isTabixRange(ranges)))
   stopifnot(!is.null(multiAllelic))
 
@@ -1076,3 +1085,96 @@ download.annotation.resource <- function(outputDirectory) {
   invisible(NULL)
 }
 
+##################################################
+## BGEN file formats
+##################################################
+
+#' Read a gene from BGEN file and return a genotype matrix
+#'
+#' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
+#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200
+#' @return genotype matrix
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("bgen/all.anno.filtered.extract.bgen", package = "seqminer")
+#' cfh <- readBGENToMatrixByRange(fileName, "1:196621007-196716634")
+readBGENToMatrixByRange <- function(fileName, range) {
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
+  stopifnot(hasIndex(fileName))
+  stopifnot(all(isTabixRange(range)))
+  fileName <- path.expand(fileName)
+
+  storage.mode(fileName) <- "character"
+  storage.mode(range)    <- "character"
+  .Call("readBGENToMatrixByRange", fileName, range, PACKAGE="seqminer");
+}
+
+#' Read a gene from BGEN file and return a genotype matrix
+#'
+#' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
+#' @param geneFile character, a text file listing all genes in refFlat format
+#' @param geneName character vector, which gene(s) to be extracted
+#' @return genotype matrix
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("bgen/all.anno.filtered.extract.bgen", package = "seqminer")
+#' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
+#' cfh <- readBGENToMatrixByGene(fileName, geneFile, "CFH")
+readBGENToMatrixByGene <- function(fileName, geneFile, geneName) {
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
+  stopifnot(local.file.exists(geneFile), length(geneFile) == 1)
+  stopifnot(hasIndex(fileName))
+  fileName <- path.expand(fileName)
+
+  storage.mode(fileName) <- "character"
+  storage.mode(geneFile) <- "character"
+  storage.mode(geneName) <- "character"
+  .Call("readBGENToMatrixByGene", fileName, geneFile, geneName, PACKAGE="seqminer");
+}
+
+#' Read information from BGEN file in a given range and return a list
+#'
+#' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
+#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200
+#' @return a list of genes, and each elements has specified vcfColumn, vcfinfo, vcfIndv
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("bgen/all.anno.filtered.extract.bgen", package = "seqminer")
+#' cfh <- readBGENToListByRange(fileName, "1:196621007-196716634")
+readBGENToListByRange <- function(fileName, range) {
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
+  stopifnot(hasIndex(fileName))
+  stopifnot(all(isTabixRange(range)))
+  fileName <- path.expand(fileName)
+
+  storage.mode(fileName) <- "character"
+  storage.mode(range)    <- "character"
+  .Call("readBGENToListByRange", fileName, range, PACKAGE="seqminer");
+}
+
+#' Read information from BGEN file in a given range and return a list
+#'
+#' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
+#' @param geneFile character, a text file listing all genes in refFlat format
+#' @param geneName character vector, which gene(s) to be extracted
+#' @return a list of genes, and each elements has specified vcfColumn, vcfinfo, vcfIndv
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("bgen/all.anno.filtered.extract.bgen", package = "seqminer")
+#' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
+#' cfh <- readBGENToListByGene(fileName, geneFile, "CFH")
+readBGENToListByGene <- function(fileName, geneFile, geneName) {
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
+  stopifnot(file.exists(geneFile), length(geneFile) == 1)
+  stopifnot(hasIndex(fileName))
+  fileName <- path.expand(fileName)
+
+  storage.mode(fileName) <- "character"
+  storage.mode(geneFile) <- "character"
+  storage.mode(geneName) <- "character"
+  .Call("readBGENToListByGene", fileName, geneFile, geneName, PACKAGE="seqminer");
+}

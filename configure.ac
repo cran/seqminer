@@ -11,16 +11,16 @@ dnl adopted from: https://github.com/cran/dfmta/blob/master/configure.ac
 AC_DEFUN([AX_GET_R_CONF_VAR],[$1=`"${R_HOME}/bin/R" CMD config $1`])
 AX_GET_R_CONF_VAR([CC])
 AX_GET_R_CONF_VAR([CFLAGS])
-AX_GET_R_CONF_VAR([CXX])
-AX_GET_R_CONF_VAR([CPPFLAGS])
-AX_GET_R_CONF_VAR([CXXFLAGS])
+AX_GET_R_CONF_VAR([CXX11])
+AX_GET_R_CONF_VAR([CXX11STD])
+AX_GET_R_CONF_VAR([CXX11FLAGS])
+CXX="${CXX11} ${CXX11STD}"
 
 dnl print out flags to ease debugging
 AC_MSG_NOTICE([CC = $CC])
 AC_MSG_NOTICE([CFLAGS = $CFLAGS])
-AC_MSG_NOTICE([CXX = $CXX])
-AC_MSG_NOTICE([CPPFLAGS = $CPPFLAGS])
-AC_MSG_NOTICE([CXXFLAGS = $CXXFLAGS])
+AC_MSG_NOTICE([CXX = $CXX11 $CXX11STD])
+AC_MSG_NOTICE([CXXFLAGS = $CXX11FLAGS])
 
 dnl skip checking C compilers as we also need to check C++ compiler
 dnl AC_LANG(C)
@@ -62,9 +62,20 @@ int main(void) {
 }], [AC_DEFINE([HAVE_REG_STARTEND], [1], [Do you have a working REG_STARTEND?])
 AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
 
+dnl compile sqlite-amalgamation-3250300
+dnl specify sqlite.o in Makevars.in
+
+dnl dnl compile zstd-1.3.7
+dnl AC_MSG_NOTICE([Finished building zstd library])
+dnl base_dir=$(pwd)
+dnl ZSTD_CFLAGS=$("${R_HOME}/bin/R" CMD config CFLAGS)
+dnl ZSTD_LIBS="$base_dir/src/zstd/lib/libzstd.a"
+dnl AC_CONFIG_COMMANDS([zstd compiling],
+dnl                    [make -C src/zstd/lib lib CFLAGS="-fPIC ${ZSTD_CFLAGS}"])
+
 
 AC_SUBST([PKG_CFLAGS], ["-D_USE_KNETFILE -I. ${CFLAGS}"])
-AC_SUBST([PKG_CXX1XFLAGS], ["-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXXFLAGS}"])
+AC_SUBST([PKG_CPPFLAGS], ["-D_USE_KNETFILE -I. ${CXX11FLAGS}"])
 AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2}"])
 
 AC_CONFIG_FILES([src/Makevars])
