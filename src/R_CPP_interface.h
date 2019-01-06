@@ -18,6 +18,7 @@ void extractString(SEXP in, std::string* out);
  * NOTE
  */
 void extractStringArray(SEXP in, std::vector<std::string>* out);
+void extractIntArray(SEXP in, std::vector<int>* out);
 
 void extractStringSet(SEXP in, std::set<std::string>* out);
 
@@ -26,26 +27,29 @@ SEXP getListElement(SEXP list, const char *str);
 
 void dump(std::vector<std::string> & s);
 
-int storeResult(const std::vector<std::string>& in , SEXP ret, int idx) ;
 
-int storeResult(const std::vector<int>& in , SEXP& ret, int idx);
-
-int storeIntResult(const std::vector<std::string>& in , SEXP& ret, int idx);
-
-int storeResult(const std::vector<double>& in , SEXP& ret, int idx);
-
-int storeDoubleResult(const std::vector<std::string>& in , SEXP& ret, int idx);
+// store @param in to @param ret at index @param idx
 
 int storeResult(const std::vector<bool>& in ,  SEXP& ret, int idx) ;
+int storeResult(const std::vector<int>& in , SEXP& ret, int idx);
+int storeResult(const std::vector<double>& in , SEXP& ret, int idx);
+int storeResult(const std::vector<std::string>& in , SEXP ret, int idx) ;
 
 int storeResult(const std::vector<std::vector<double> >& in ,  SEXP& ret, int idx) ;
-
 int storeResult(const std::vector<std::vector<std::vector<double> > >& in ,  SEXP& ret, int idx);
 
-int storeResult(const std::string& key, const std::vector<std::string>& val , SEXP ret, int idx); 
+// store result @param in to a SEXP @param ret
+int storeResult(const std::vector<std::string>& in , SEXP* ret) ;
+int storeResult(const std::vector<double>& in, SEXP* ret);
+int storeResult(const std::vector<std::vector<double> >& in, SEXP* ret);
 
+// store @param key and @param val to @param ret at index @param idx
+int storeResult(const std::string& key, const std::vector<std::string>& val , SEXP ret, int idx); 
 int storeResult(const std::string& key, const std::vector<int>& val , SEXP& ret, int idx);
 
+// convert and store results
+int storeDoubleResult(const std::vector<std::string>& in , SEXP& ret, int idx);
+int storeIntResult(const std::vector<std::string>& in , SEXP& ret, int idx);
 
 int setDim(int nrow, int ncol, SEXP* s);
 int setDim(int i, int j, int k, SEXP* s);
@@ -62,6 +66,7 @@ int setDimNames(const std::vector<std::string>& ni,
  */
 int setDim(int nrow, int ncol, SEXP ret, int idx);
 
+#if 0
 int createList(int n, SEXP* s); 
 
 int createStringArray(int n, SEXP* s);
@@ -69,6 +74,7 @@ int createStringArray(int n, SEXP* s);
 int createDoubleArray(int n, SEXP* s);
 
 int createIntArray(int n, SEXP* s);
+#endif
 
 int setListNames(std::vector<std::string>& names, SEXP* s);
 
@@ -78,12 +84,6 @@ void initIntArray(SEXP s);
 
 void initStringArray(SEXP s); 
 
-/**
- * Another set of utility function
- */
-int storeResult(const std::vector<std::string>& in , SEXP* ret) ;
-int storeResult(const std::vector<double>& in, SEXP* ret);
-int storeResult(const std::vector<std::vector<double> >& in, SEXP* ret);
 
 int getDim(SEXP s, std::vector<int>* d);
 
