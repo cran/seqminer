@@ -2,8 +2,8 @@ Package: seqminer
 Type: Package
 Title: Efficiently Read Sequence Data (VCF Format, BCF Format, METAL
         Format and BGEN Format) into R
-Version: 7.1
-Date: 2019-1-7
+Version: 8.0
+Date: 2020-2-28
 Authors@R: c(person("Xiaowei", "Zhan", email = "zhanxw@gmail.com", role = c("aut", "cre")),
            person("Dajiang", "Liu", email = "dajiang.liu@gmail.com", role = "aut"),
            person("Attractive Chaos", email = "attractor@live.co.uk", role = "cph", comment = "We have used the following software and made minimal necessary changes: Tabix, Heng Li <lh3@live.co.uk> (MIT license). We removed standard IO related functions, e.g. printf, fprintf ; also changed its un-safe pointer arithmetics."),	
@@ -22,7 +22,7 @@ Copyright: We have used the following software and made minimal
 License: GPL | file LICENSE
 URL: http://seqminer.genomic.codes
 BugReports: https://github.com/zhanxw/seqminer/issues
-Packaged: 2019-01-07 21:30:23 UTC; zhanxw
+Packaged: 2020-03-01 01:51:14 UTC; zhanxw
 Repository: CRAN
 Suggests: testthat, SKAT
 SystemRequirements: C++11, zlib headers and libraries, GNU make,
@@ -39,4 +39,4 @@ Author: Xiaowei Zhan [aut, cre],
   Broad Institute / Massachusetts Institute of Technology [cph],
   Genome Research Ltd (GRL) [cph],
   Facebook, Inc [cph]
-Date/Publication: 2019-01-08 15:20:03 UTC
+Date/Publication: 2020-03-02 12:10:03 UTC

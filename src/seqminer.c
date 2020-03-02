@@ -173,6 +173,31 @@ SEXP readBedToMatrixByIndex(SEXP arg_fileName, SEXP arg_numSample,
   return impl_readBedToMatrixByIndex(arg_fileName, arg_numSample, arg_numMarker,
                                      arg_sampleIdx, arg_markerIdx);
 }
+
+//////////////////////////////////////////////////
+// SingleChromosome related
+//////////////////////////////////////////////////
+
+extern SEXP impl_readSingleChromosomeVCFToMatrixByRange(SEXP fileName, SEXP indexFile, SEXP range);
+SEXP readSingleChromosomeVCFToMatrixByRange(SEXP fileName, SEXP indexFile, SEXP range) {
+  return impl_readSingleChromosomeVCFToMatrixByRange(fileName, indexFile, range);
+}
+
+extern SEXP impl_createSingleChromosomeVCFIndex(SEXP fileName, SEXP indexFileName);
+SEXP createSingleChromosomeVCFIndex(SEXP fileName, SEXP indexFileName) {
+  return impl_createSingleChromosomeVCFIndex(fileName, indexFileName);
+}
+
+extern SEXP impl_readSingleChromosomeBCFToMatrixByRange(SEXP fileName, SEXP indexFile, SEXP range);
+SEXP readSingleChromosomeBCFToMatrixByRange(SEXP fileName, SEXP indexFile, SEXP range) {
+  return impl_readSingleChromosomeBCFToMatrixByRange(fileName, indexFile, range);
+}
+
+extern SEXP impl_createSingleChromosomeBCFIndex(SEXP fileName, SEXP indexFileName);
+SEXP createSingleChromosomeBCFIndex(SEXP fileName, SEXP indexFileName) {
+  return impl_createSingleChromosomeBCFIndex(fileName, indexFileName);
+}
+
 //////////////////////////////////////////////////
 // NOTE: need to update seqminer_init.c to register all functions
 //////////////////////////////////////////////////

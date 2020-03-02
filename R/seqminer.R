@@ -70,7 +70,7 @@ isTabixRange <- function(range) {
     }
     return(TRUE)
   }
-  ranges <- strsplit(x = range, split = ",")[[1]]
+  ranges <- unlist(strsplit(x = range, split = ","))
   sapply(ranges, isValid)
 }
 
@@ -156,7 +156,7 @@ hasIndex <- function(fileName) {
 #' Read a gene from VCF file and return a genotype matrix
 #'
 #' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index
 #' @param annoType character, annotated types you would like to extract, such as "Nonsynonymous", "Synonymous". This can be left empty.
 #' @return genotype matrix
 #' @export
@@ -205,7 +205,7 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
 #' Read information from VCF file in a given range and return a list
 #'
 #' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index
 #' @param annoType character, annotated types you would like to extract, such as "Nonsynonymous", "Synonymous". This can be left empty.
 #' @param vcfColumn character vector, which vcf columns to extract. It can be chosen from CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT and etc.
 #' @param vcfInfo character vector, which should be tags in the INFO columns to extarct. Common choices include: DP, AC, AF, NS
@@ -310,7 +310,7 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName, 
 #'
 #' @param scoreTestFiles character vector, score test output files (rvtests outputs using --meta score)
 #' @param covFiles character vector, covaraite files (rvtests outputs using --meta cov)
-#' @param ranges character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @param ranges character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index
 #' @param multiAllelic boolean, whether to read multi-allelic sites as multiple variants or not
 #' @return a list of statistics including chromosome, position, allele frequency, score statistics, covariance and annotation(if input files are annotated).
 #' @export
@@ -597,7 +597,10 @@ rvmeta.readNullModel <- function(scoreTestFiles) {
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
-#' rvmeta.writeScoreData(cfh, "cfh.MetaScore.assoc")
+#'
+#' outFile <- file.path(tempdir(), "cfh.MetaScore.assoc")
+#' rvmeta.writeScoreData(cfh, outFile)
+#' cat('Outputted MetaScore file are in the temp directory:', outFile, '\n')
 rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
   outName <- path.expand(outName)
   storage.mode(outName) <- "character"
@@ -620,7 +623,10 @@ rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
-#' rvmeta.writeCovData(cfh, "cfh.MetaCov.assoc.gz")
+#'
+#' outFile <- file.path(tempdir(), "cfh.MetaCov.assoc.gz")
+#' rvmeta.writeCovData(cfh, outFile)
+#' cat('Outputted MetaCov file are in the temp directory:', outFile, '\n')
 rvmeta.writeCovData <- function (rvmetaData, outName) {
   outName <- path.expand(outName)
   storage.mode(outName) <- "character"
@@ -934,8 +940,9 @@ getRefBase <- function(reference, chrom, position, len = NULL) {
 #'               geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
 #' param <- makeAnnotationParameter(param)
 #' inVcf <- system.file("tabanno/input.test.vcf", package = "seqminer")
-#' outVcf <- paste0(getwd(), "/", "out.vcf")
+#' outVcf <- file.path(tempdir(), "/", "out.vcf")
 #' annotateVcf (inVcf, outVcf, param)
+#' cat('Annotated VCF files are in the temp directory:', outVcf, '\n')
 annotateVcf <- function(inVcf, outVcf, params) {
   params$inputFormat = "vcf"
   params <- makeAnnotationParameter(params)
@@ -965,8 +972,9 @@ annotateVcf <- function(inVcf, outVcf, params) {
 #'               inputFormat = "plain")
 #' param <- makeAnnotationParameter(param)
 #' inFile <- system.file("tabanno/input.test.plain.txt", package = "seqminer")
-#' outFile <- paste0(getwd(), "/", "out.annotated.txt")
+#' outFile <- file.path(tempdir(), "out.annotated.txt")
 #' annotatePlain(inFile, outFile, param)
+#' cat('Outputted annotation results are in the temp directory:', outFile, '\n')
 annotatePlain <- function(inFile, outFile, params) {
   params$inputFormat = "plain"
   params <- makeAnnotationParameter(params)
@@ -987,7 +995,7 @@ annotatePlain <- function(inFile, outFile, params) {
 
 #' Test whether a vector of positions are inside given ranges
 #' @param positions characters, positions. e.g. c("1:2-3", "1:4")
-#' @param rangeList character, ranges, e.g. "1:1-3,1:2-4"
+#' @param rangeList character, ranges, e.g. "1:1-3,1:2-4", 1-based index
 #' @return logical vector, TRUE/FALSE/NA
 #' @export
 #' @examples
@@ -1002,8 +1010,8 @@ isInRange <- function(positions, rangeList) {
 
 #' Extract pair of positions by ranges
 #' @param covData a covariance matrix with positions as dimnames
-#' @param rangeList1 character specify a range
-#' @param rangeList2 character specify a range
+#' @param rangeList1 character specify a range, 1-based index
+#' @param rangeList2 character specify a range, 1-based index
 #' @return a covariance matrix
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' cfh <- rvmeta.readCovByRange(covFileName, "1:196621007-196716634")
@@ -1092,7 +1100,7 @@ download.annotation.resource <- function(outputDirectory) {
 #' Read a gene from BGEN file and return a genotype matrix
 #'
 #' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200
+#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200, 1-based index
 #' @return genotype matrix
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
@@ -1137,8 +1145,8 @@ readBGENToMatrixByGene <- function(fileName, geneFile, geneName) {
 #' Read information from BGEN file in a given range and return a list
 #'
 #' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200
-#' @return a list of genes, and each elements has specified vcfColumn, vcfinfo, vcfIndv
+#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200, 1-based index
+#' @return a list of chrom, pos, varid, rsid, alleles, isPhased, probability, sampleId
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
 #' @examples
@@ -1160,7 +1168,7 @@ readBGENToListByRange <- function(fileName, range) {
 #' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
 #' @param geneFile character, a text file listing all genes in refFlat format
 #' @param geneName character vector, which gene(s) to be extracted
-#' @return a list of genes, and each elements has specified vcfColumn, vcfinfo, vcfIndv
+#' @return a list of chrom, pos, varid, rsid, alleles, isPhased, probability, sampleId
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
 #' @examples
@@ -1182,9 +1190,9 @@ readBGENToListByGene <- function(fileName, geneFile, geneName) {
 ##################################################
 ## PLINK file formats
 ##################################################
-#' Read a gene from BGEN file and return a genotype matrix
+#' Read from binary PLINK file and return a genotype matrix
 #'
-#' @param plinkFileObject a PlinkFileObject obtained by openPlink()
+#' @param plinkFilePrefix a PlinkFileObject obtained by openPlink()
 #' @param sampleIndex integer, 1-basd, index of samples to be extracted
 #' @param markerIndex integer, 1-basd, index of markers to be extracted
 #' @return genotype matrix, marker by sample
@@ -1198,19 +1206,19 @@ readBGENToListByGene <- function(fileName, geneFile, geneName) {
 #' sampleIndex = seq(3)
 #' markerIndex =c(14, 36)
 #' cfh <- readPlinkToMatrixByIndex(fileName, sampleIndex, markerIndex)
-readPlinkToMatrixByIndex <- function(plinkFileObject, sampleIndex, markerIndex) {
-  stopifnot(local.file.exists(sprintf("%s.bed", fileName)), length(fileName) == 1)
-  fileName <- path.expand(fileName)
+readPlinkToMatrixByIndex <- function(plinkFilePrefix, sampleIndex, markerIndex) {
+  stopifnot(local.file.exists(sprintf("%s.bed", plinkFilePrefix)), length(plinkFilePrefix) == 1)
+  plinkFilePrefix <- path.expand(plinkFilePrefix)
 
   # pass 0-index to c codes
   sampleIndex <- as.integer(sampleIndex - 1)
   markerIndex <- as.integer(markerIndex - 1)
 
-  storage.mode(fileName) <- "character"
+  storage.mode(plinkFilePrefix) <- "character"
   storage.mode(sampleIndex) <- "integer"
   storage.mode(markerIndex) <- "integer"
 
-  .Call("readPlinkToMatrixByIndex", fileName, sampleIndex , markerIndex, PACKAGE="seqminer");
+  .Call("readPlinkToMatrixByIndex", plinkFilePrefix, sampleIndex , markerIndex, PACKAGE="seqminer");
 }
 
 #' Open binary PLINK files
@@ -1273,7 +1281,7 @@ openPlink <- function(fileName) {
   return(ret)
 }
 
-#' Read a gene from BGEN file and return a genotype matrix
+#' Read from binary PLINK file and return a genotype matrix
 #'
 #' @param plinkFileObject a PlinkFileObject obtained by openPlink()
 #' @param sampleIndex integer, 1-basd, index of samples to be extracted
@@ -1323,6 +1331,114 @@ openPlink <- function(fileName) {
   rownames(ret) <- rname
   colnames(ret) <- cname
   ret
+}
+
+
+#' Read a range from VCF file and return a genotype matrix
+#'
+#' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
+#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index
+#' @param indexFileName character, index file, by default, it s `fileName`.scIdx
+#' @return genotype matrix
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+#' cfh <- readSingleChromosomeVCFToMatrixByRange(fileName, "1:196621007-196716634")
+readSingleChromosomeVCFToMatrixByRange <- function(fileName, range, indexFileName = NULL) {
+  stopifnot(file.exists(fileName), length(fileName) == 1)
+  stopifnot(all(isTabixRange(range)))
+  fileName <- path.expand(fileName)
+
+  if (is.null(indexFileName)) {
+    indexFileName = sprintf("%s.scIdx", fileName)
+  }
+  stopifnot(file.exists(indexFileName))
+
+  storage.mode(fileName) <- "character"
+  storage.mode(indexFileName) <- "character"
+  storage.mode(range)    <- "character"
+  .Call("readSingleChromosomeVCFToMatrixByRange", fileName, indexFileName, range, PACKAGE="seqminer");
+}
+
+#' Create a single chromosome index
+#'
+#' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
+#' @param indexFileName character, by default, create `fileName`.scIdx
+#' @return indexFileName if success, or NULL is failed
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+#' cfh <- createSingleChromosomeVCFIndex(fileName)
+createSingleChromosomeVCFIndex <- function(fileName, indexFileName = NULL) {
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
+
+  if (is.null(indexFileName)) {
+    indexFileName = sprintf("%s.scIdx", fileName)
+  }
+  if (file.exists(indexFileName)) {
+    warning("index file exists, please remove it before re-creating one")
+    return(NULL)
+  }
+
+  storage.mode(fileName) <- "character"
+  storage.mode(indexFileName) <- "character"
+  .Call("createSingleChromosomeVCFIndex", fileName, indexFileName, PACKAGE="seqminer");
+}
+
+
+#' Read a range from BCF file and return a genotype matrix
+#'
+#' @param fileName character, represents an input BCF file (Bgzipped, with Tabix index)
+#' @param range character, a text indicating which range in the BCF file to extract. e.g. 1:100-200, 1-based index
+#' @param indexFileName character, index file, by default, it s `fileName`.scIdx
+#' @return genotype matrix
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("vcf/all.anno.filtered.extract.headerFixed.bcf.gz", package = "seqminer")
+#' cfh <- readSingleChromosomeBCFToMatrixByRange(fileName, "1:196621007-196716634")
+readSingleChromosomeBCFToMatrixByRange <- function(fileName, range, indexFileName = NULL) {
+  stopifnot(file.exists(fileName), length(fileName) == 1)
+  stopifnot(all(isTabixRange(range)))
+  fileName <- path.expand(fileName)
+
+  if (is.null(indexFileName)) {
+    indexFileName = sprintf("%s.scIdx", fileName)
+  }
+  stopifnot(file.exists(indexFileName))
+
+  storage.mode(fileName) <- "character"
+  storage.mode(indexFileName) <- "character"
+  storage.mode(range)    <- "character"
+  .Call("readSingleChromosomeBCFToMatrixByRange", fileName, indexFileName, range, PACKAGE="seqminer");
+}
+
+#' Create a single chromosome index
+#'
+#' @param fileName character, represents an input BCF file (Bgzipped, with Tabix index)
+#' @param indexFileName character, by default, create `fileName`.scIdx
+#' @return indexFileName if success, or NULL is failed
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("vcf/all.anno.filtered.extract.headerFixed.bcf.gz", package = "seqminer")
+#' cfh <- createSingleChromosomeBCFIndex(fileName)
+createSingleChromosomeBCFIndex <- function(fileName, indexFileName = NULL) {
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
+
+  if (is.null(indexFileName)) {
+    indexFileName = sprintf("%s.scIdx", fileName)
+  }
+  if (file.exists(indexFileName)) {
+    warning("index file exists, please remove it before re-creating one")
+    return(NULL)
+  }
+
+  storage.mode(fileName) <- "character"
+  storage.mode(indexFileName) <- "character"
+  .Call("createSingleChromosomeBCFIndex", fileName, indexFileName, PACKAGE="seqminer");
 }
 
 

@@ -1,3 +1,23 @@
+2019-08-23  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix a bug related to column names when using single chrom indices
+
+2019-08-21  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Improve column names when using single chrom indices
+
+2019-03-21  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support single chromosome index for bcf
+
+2019-02-23  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix a bug related to query BGenIndex file (use int64)
+
+2019-01-09  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support single chromosome index for vcf
+
 2019-01-05  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Revise R/CPP interface codes
@@ -67,7 +87,7 @@
 
 	* Relax covariance file format restriction to accomodate rmw
 	* Add feature to generate Makefiles
-	
+
 2015-08-13  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Fix bug when tabix file does not have headers
