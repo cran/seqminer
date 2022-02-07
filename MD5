@@ -1,13 +1,13 @@
 607aa840cd5a1095570af0dee3b566bf *ChangeLog
-43c61499381ea8412683fcb9a1a8ee04 *DESCRIPTION
-50c28547d51e8cbb9a908e6696fedb86 *LICENSE
+b2f741a93ca65b3ffd9f252ade6e2001 *DESCRIPTION
+25630457e3b047be8df1374055e235b0 *LICENSE
 f47f171258d37858064cb460710ce893 *NAMESPACE
 c7f735747447c989c5abec27f25dd8e6 *R/genMakefile.R
 683235a013b3a25095358bbabdaddd6c *R/seqminer.R
-c0b7feb75a9be0a24a2b5922b64ff663 *README.md
+2ec5c186cfd96e26fa745a0181f9b96d *README.md
 0e3def53fcb144f646aa72ce734d388d *cleanup
-918ec88d25c718a957d9282e1372c637 *configure
-77e19ce8d76da7be015b9ac7c1541358 *configure.ac
+273daeecfbca72c63933b42fa4b5e9dc *configure
+e126751f3632969d4a5581e0d4ee3539 *configure.ac
 d41d8cd98f00b204e9800998ecf8427e *configure.win
 a7aa8e76f7e4646af6b644cdf37f2cb7 *demo/00Index
 34ab676ae0614287c6170163dbcc0c44 *demo/annotate.R
@@ -161,7 +161,7 @@ d4e582d771ff7c37a86da0b8ab12766d *src/GenomeSequence.h
 47e38da7377fc11ba10b374a6a4c13a8 *src/HiCExtract.h
 7379f7e85604c214732267e58e2a78b3 *src/Indexer.h
 422d83b84e05058cdff9a2032fc2b196 *src/LogFile.h
-6ab57dda2e8d7e65651af4d4f5128d95 *src/Makevars.in
+ebd22d12179db308580143127c82ac34 *src/Makevars.in
 60e02a9cd5ca89d3d18fdd23d1f89e34 *src/Makevars.win
 d9fbc638f23c8635a9fd66910e89dfd2 *src/Maximum.h
 814caa59c12b8df7533a2414ea865cd5 *src/MmapFile.cpp
