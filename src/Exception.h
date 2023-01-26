@@ -1,7 +1,7 @@
 #ifndef _EXCEPTION_H_
 #define _EXCEPTION_H_
 
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
@@ -42,7 +42,7 @@ inline void log_error(const char* s) {
 #endif
 
 inline void REPORT(const char* x) { 
-    REprintf("Report '%s' to zhanxw@umich.edu\n", x ); 
+    REprintf("Report '%s' at https://github.com/zhanxw/seqminer\n", x ); 
 }
 
 inline void FATAL(const char* x) {

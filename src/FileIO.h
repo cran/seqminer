@@ -2,7 +2,7 @@
 #define _FILEIO_H_
 
 #define UNUSED(x) ((void)(x))
-#include <stdio.h>   //fopen
+#include <cstdio>   //fopen
 #include <stdlib.h>  //malloc
 #include <string.h>  //strchr
 #include <stdarg.h>  // va_list
@@ -247,6 +247,9 @@ class Bzip2FileReader : public AbstractFileReader {
 class KnetFileReader : public AbstractFileReader {
  public:
   KnetFileReader(const char* fileName) : fp(NULL) {
+#ifdef _WIN32
+    knet_win32_init();
+#endif
     this->open(fileName);
 #ifdef IO_DEBUG
     REprintf("KnetFileReader() open %s\n", fileName);
@@ -257,20 +260,36 @@ class KnetFileReader : public AbstractFileReader {
     REprintf("~KnetFileReader() close\n");
 #endif
     this->close();
+#ifdef _WIN32
+    knet_win32_destroy();
+#endif
   };
 
   // get a char, if EOF, return EOF
   int getc() {
-    return bgzf_getc(this->fp);
+    // return bgzf_getc(this->fp);
+    int c;
+    if (knet_read(this->fp, &c, sizeof(char)) == 0) {
+      return EOF;
+    } else {
+      return c;
+    }
   }
   // check eof
   bool isEof() {
-    // this is always false, as we don't know the exact file size
-    return bgzf_check_EOF(this->fp);
+    // we don't know the exact file size over internet;
+    // and we only know eof from read() return value
+    if (!this->fp) { // probably files are not openned
+      return true;
+    }
+    return (this->eof);
+    // return bgzf_check_EOF(this->fp);
   }
   // open
-  BGZF* open(const char* fileName) {
-//     knetFile* fpr = knet_open(fileName, "r");
+  knetFile* open(const char* fileName) {
+    this->eof = false;
+    this->fp  = knet_open(fileName, "r");
+    //     fpr = knet_open(fileName, "rb");
 // #ifdef _WIN32    
 //     fpr = knet_open(fileName, "rb");
 // #else
@@ -283,7 +302,7 @@ class KnetFileReader : public AbstractFileReader {
     // this->fp = bgzf_read_init();
     // this->fp->fp = fpr;
 
-    this->fp = bgzf_open(fileName, "r");
+    // this->fp = bgzf_open(fileName, "r");
     if (!this->fp) {
       REprintf("ERROR: Cannot open %s\n", fileName);
     }
@@ -292,16 +311,25 @@ class KnetFileReader : public AbstractFileReader {
   // close
   void close() {
     if (this->fp) {
-      bgzf_close(this->fp);
+      // bgzf_close(this->fp);
+      knet_close(this->fp);
       fp = NULL;
     }
+    this->eof = true;
   }
   int read(void* buf, int len) {
-    return bgzf_read(this->fp, buf, len);
+    // return bgzf_read(this->fp, buf, len);
+    off_t l = knet_read(this->fp, buf, len);
+    if (l < len || l == 0) {
+      this->eof =  true;
+    }
+    return l;
   }
 
  private:
-  BGZF* fp;
+  // BGZF* fp;
+  knetFile* fp;
+  bool eof;  // when read() fewer bytes or zero
 };
 #endif
 //////////////////////////////////////////////////////////////////////
