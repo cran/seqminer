@@ -1,13 +1,13 @@
-14fffae0a49f1f941e0160d7d6bee1ec *ChangeLog
-a19fe41bde4b1a5e79c4965f59eea70e *DESCRIPTION
-25630457e3b047be8df1374055e235b0 *LICENSE
+d8e5953484068db81cd59431a9132ac8 *ChangeLog
+260e4cf25bf715d401f09b9aad54ee0a *DESCRIPTION
+e56e0d459ff5cf6849aa20881c79bf0a *LICENSE
 f47f171258d37858064cb460710ce893 *NAMESPACE
 c7f735747447c989c5abec27f25dd8e6 *R/genMakefile.R
 683235a013b3a25095358bbabdaddd6c *R/seqminer.R
-2e9e1196000b0e14cfe893aa5146c873 *README.md
+ac0c16388fc7ec77c17a9aaa599f964a *README.md
 0e3def53fcb144f646aa72ce734d388d *cleanup
 273daeecfbca72c63933b42fa4b5e9dc *configure
-e126751f3632969d4a5581e0d4ee3539 *configure.ac
+60ab71a6ef4de471df3c059adcff4f64 *configure.ac
 d41d8cd98f00b204e9800998ecf8427e *configure.win
 a7aa8e76f7e4646af6b644cdf37f2cb7 *demo/00Index
 34ab676ae0614287c6170163dbcc0c44 *demo/annotate.R
@@ -161,8 +161,8 @@ d4e582d771ff7c37a86da0b8ab12766d *src/GenomeSequence.h
 47e38da7377fc11ba10b374a6a4c13a8 *src/HiCExtract.h
 7379f7e85604c214732267e58e2a78b3 *src/Indexer.h
 422d83b84e05058cdff9a2032fc2b196 *src/LogFile.h
-ebd22d12179db308580143127c82ac34 *src/Makevars.in
-60e02a9cd5ca89d3d18fdd23d1f89e34 *src/Makevars.win
+921fed06a9958cd13a93a879718e5a95 *src/Makevars.in
+31ec2f83fa50a09be2c7a8c3be48ed29 *src/Makevars.win
 d9fbc638f23c8635a9fd66910e89dfd2 *src/Maximum.h
 ad5c71a61629dcb2e2189310f9452e89 *src/MmapFile.cpp
 8ae811fe32127ee715b80d2992be8367 *src/MmapFile.h
@@ -244,7 +244,7 @@ e6fa98213a711d4a816a9c35a0a90bdb *src/kstring.h
 1705f53f13f9969916df3ef711843b93 *src/plink2genoLoader.h
 e1ac23dc2ba6b66207ef5c25be77f325 *src/rvMetaLoader.cpp
 3e282c8377c668d4e6add53c051f8610 *src/rvMetaLoader.h
-773d6718a647fd1af53543b7b9345c50 *src/scbcf2genoLoader.cpp
+88f77cbc398216996cf6fc299e84110a *src/scbcf2genoLoader.cpp
 bf733e6082a02e0308a9293fdc47e73b *src/scbcf2genoLoader.h
 fc5db68fcc2cb5f9a64acab62ed5f250 *src/scvcf2genoLoader.cpp
 c963aa9881e9ccff6011a34efe5f30d2 *src/scvcf2genoLoader.h
@@ -274,7 +274,6 @@ ffcc299bc21386aa4ee4d442f33f10dd *src/zstd/appveyor.yml
 9fcedb2d29212f2c0958d8c772e1dc86 *src/zstd/build/VS2008/fullbench/fullbench.vcproj
 804157e77ebffaee7bdb51883054866c *src/zstd/build/VS2008/fuzzer/fuzzer.vcproj
 8c514e8478c64a5edc6a66866a4f653f *src/zstd/build/VS2008/zstd.sln
-c12811373a639b4ed2db6b213575d6fd *src/zstd/build/VS2008/zstd/zstd.vcproj
 2f326befefc67360a8cd4bf5772f0845 *src/zstd/build/VS2008/zstdlib/zstdlib.vcproj
 da6646f65d617a88c3ec1e4f3196153b *src/zstd/build/VS2010/CompileAsCpp.props
 a05ce3233ddbf839a557f66b000cce85 *src/zstd/build/VS2010/datagen/datagen.vcxproj
@@ -285,8 +284,6 @@ e2836110cc2172349d5decf2a858ef1e *src/zstd/build/VS2010/fuzzer/fuzzer.vcxproj
 ccfc7049e3d94a0e9de9f7cd448ccb44 *src/zstd/build/VS2010/libzstd-dll/libzstd-dll.vcxproj
 d01b18eab878915ced3e4198d0fba61f *src/zstd/build/VS2010/libzstd/libzstd.vcxproj
 9f4a1a9693e29dc38ffe753bd89f6b89 *src/zstd/build/VS2010/zstd.sln
-bc6da55ac1375d4a70aa15ce5ac1c9d1 *src/zstd/build/VS2010/zstd/zstd.rc
-c6ec26d50ddd051ed2d1e143508ebb75 *src/zstd/build/VS2010/zstd/zstd.vcxproj
 d416af5dff82443e3abdba248ef8b57a *src/zstd/build/VS_scripts/README.md
 6be22d9d10b4b50cba68092ed1200232 *src/zstd/build/VS_scripts/build.VS2010.cmd
 43b7845346e9f79f44f12f67ac3e2002 *src/zstd/build/VS_scripts/build.VS2012.cmd
@@ -303,9 +300,6 @@ c9bda4a277a5899dfff34ff4fdf001e6 *src/zstd/build/cmake/CMakeModules/AddZstdCompi
 81ea24755a21ed93add4528a533acf30 *src/zstd/build/cmake/contrib/CMakeLists.txt
 dcdffd4e7d643661d8e5958ce1493ecc *src/zstd/build/cmake/contrib/gen_html/CMakeLists.txt
 c6b49c8b030123265e7b1308bff72bed *src/zstd/build/cmake/contrib/pzstd/CMakeLists.txt
-56b6a1fb04c09680c978f998f7c60d65 *src/zstd/build/cmake/lib/CMakeLists.txt
-ffde197bbe012bf828a8b1c5044ebdcb *src/zstd/build/cmake/lib/cmake_uninstall.cmake.in
-1ca93bc306861c3682088bc99ef21d64 *src/zstd/build/cmake/lib/pkgconfig.cmake
 46eff74a0fe082e5d42f1f1657fd2004 *src/zstd/build/cmake/programs/CMakeLists.txt
 9f3904f0ee96fe685222c0798535f1c1 *src/zstd/build/cmake/tests/CMakeLists.txt
 56d46b1680947a46b7741e83a9ad92bc *src/zstd/lib/BUCK
