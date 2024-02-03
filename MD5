@@ -1,5 +1,5 @@
-d84a5848b4caa7bb3dd48e66f57b1526 *ChangeLog
-c1be2357fd32cbb1db94c1c7ac310e53 *DESCRIPTION
+02f26b3bafd3c5f6a1e685991ee20061 *ChangeLog
+ae9a849ed811cb2ede5d7b85543ff0fb *DESCRIPTION
 e56e0d459ff5cf6849aa20881c79bf0a *LICENSE
 f47f171258d37858064cb460710ce893 *NAMESPACE
 c7f735747447c989c5abec27f25dd8e6 *R/genMakefile.R
@@ -190,9 +190,9 @@ b65edccbd58a9489cf5fa02de266fcc5 *src/RangeList.cpp
 09969ade4377eee9926543fc2a56494a *src/SimpleMatrix.cpp
 11ece06b1566755322771d64eb705bcc *src/SimpleMatrix.h
 6689621f7dbc49a740c515e216369be0 *src/SimpleTimer.h
-966a57103eccbf4c57dc240f11283b93 *src/SingleChromosomeBCFIndex.cpp
+08e1854a94c75e6f6c56825755f7a63e *src/SingleChromosomeBCFIndex.cpp
 d8174c3b63510c52b545ab7c6ad861cd *src/SingleChromosomeBCFIndex.h
-2cd6ab66c9b1a3716c837402e4808f0d *src/SingleChromosomeVCFIndex.cpp
+6d71c66da8306d6dedf64ed3b4e5a2a7 *src/SingleChromosomeVCFIndex.cpp
 627e259b9ae73856b51757b6c7895981 *src/SingleChromosomeVCFIndex.h
 794e93aa0605a3b79b119a00f9853ecd *src/StringTemplate.h
 b692c07b3d4829ff582d73b5ea0d7e58 *src/StringUtil.h
