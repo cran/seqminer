@@ -28,6 +28,12 @@ PKG_LIBS=@PKG_LIBS@
 ## That will crash our program. So we wont use PCRE (@LIB_PCRE@).
 
 ## use SQLITE
+ifeq (@HAVE_SQLITE@,1)
+$(info have SQLite)
+PKG_CPPFLAGS+=-DHAVE_SQLITE 
+else
+$(info do not have SQLite)
+endif
 PKG_CPPFLAGS+=-I. \
              -DRSQLITE_USE_BUNDLED_SQLITE \
              -DSQLITE_ENABLE_RTREE \
@@ -40,6 +46,8 @@ PKG_CPPFLAGS+=-I. \
 
 ## for zstd
 PKG_CPPFLAGS+=-Izstd/lib -Izstd/lib/common -DXXH_NAMESPACE=ZSTD_ -Izstd/lib/legacy -DZSTD_LEGACY_SUPPORT=5
+## use R_NO_REMAP
+PKG_CPPFLAGS+=-DR_NO_REMAP
 
 ifeq (@HAVE_BZIP2@,1)
 $(info have bzip2)
