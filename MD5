@@ -1,12 +1,12 @@
 044c1294cab6f1fa661d8dca83f302b6 *ChangeLog
-7da8061c17a9e6bef5703f079b4538f0 *DESCRIPTION
+7ef0bbdb6097aba44839cedb56a8b474 *DESCRIPTION
 e56e0d459ff5cf6849aa20881c79bf0a *LICENSE
 f47f171258d37858064cb460710ce893 *NAMESPACE
 c7f735747447c989c5abec27f25dd8e6 *R/genMakefile.R
 f453b2311314ffac0af627bfffc30109 *R/seqminer.R
 94dace7c49f4b879d238b5f48bf60893 *README.md
 0e3def53fcb144f646aa72ce734d388d *cleanup
-273daeecfbca72c63933b42fa4b5e9dc *configure
+ff7b61605cef334c5bbd7cbc466d9013 *configure
 60ab71a6ef4de471df3c059adcff4f64 *configure.ac
 d41d8cd98f00b204e9800998ecf8427e *configure.win
 a7aa8e76f7e4646af6b644cdf37f2cb7 *demo/00Index
@@ -387,4 +387,4 @@ a1d1aa9bd20f3766013f98e1cdb8a702 *src/zstd/lib/libzstd.pc.in
 ceddb5c40dab70294f482139c98701b1 *src/zstd/lib/zstd.h
 17cba48c931960aa63d21809ae04ceff *tests/testthat.R
 7af71552b805e3095ecb753c6ff8c997 *tests/testthat/test-triallelic.R
-ef01a54d47380761e5c99555a59a2654 *tests/testthat/test-vcf.R
+38c4525888f1c58cc5c261700b77902a *tests/testthat/test-vcf.R

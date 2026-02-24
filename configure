@@ -2049,19 +2049,19 @@ LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 
 CC=`"${R_HOME}/bin/R" CMD config CC`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-CXX11=`"${R_HOME}/bin/R" CMD config CXX11`
-CXX11STD=`"${R_HOME}/bin/R" CMD config CXX11STD`
-CXX11FLAGS=`"${R_HOME}/bin/R" CMD config CXX11FLAGS`
-CXX="${CXX11} ${CXX11STD}"
+CXX17=`"${R_HOME}/bin/R" CMD config CXX17`
+CXX17STD=`"${R_HOME}/bin/R" CMD config CXX17STD`
+CXX17FLAGS=`"${R_HOME}/bin/R" CMD config CXX17FLAGS`
+CXX="${CXX17} ${CXX17STD}"
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: CC = $CC" >&5
 $as_echo "$as_me: CC = $CC" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}: CFLAGS = $CFLAGS" >&5
 $as_echo "$as_me: CFLAGS = $CFLAGS" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: CXX = $CXX11 $CXX11STD" >&5
-$as_echo "$as_me: CXX = $CXX11 $CXX11STD" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: CXXFLAGS = $CXX11FLAGS" >&5
-$as_echo "$as_me: CXXFLAGS = $CXX11FLAGS" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: CXX = $CXX17 $CXX17STD" >&5
+$as_echo "$as_me: CXX = $CXX17 $CXX17STD" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: CXXFLAGS = $CXX17FLAGS" >&5
+$as_echo "$as_me: CXXFLAGS = $CXX17FLAGS" >&6;}
 
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -3259,7 +3259,7 @@ fi
 
 PKG_CFLAGS="-D_USE_KNETFILE -I. ${CFLAGS}"
 
-PKG_CPPFLAGS="-D_USE_KNETFILE -I. ${CXX11FLAGS}"
+PKG_CPPFLAGS="-D_USE_KNETFILE -I. ${CXX17FLAGS}"
 
 PKG_LIBS="-lz -lm ${LIB_BZIP2} ${LIB_ZSTD} ${LIB_SQLITE}"
 
